@@ -6,14 +6,15 @@ Ferramenta desenvolvida com base na função sdhash e a estratégia MRSH-NET
   
   Para compilar:
   
-  ```
+  
   $ make
-  ```
+  
+
 Para gerar um digest com base em uma lista:
 
-  colocar o path completo para os arquivos no arquivo cb_target_set.txt
+  Colocar o path completo para os arquivos no arquivo cb_target_set.txt
   
-  execute:
+  Execute:
   
     
     $./mrsh_net -d cb_target_set.txt > Digest
