@@ -30,4 +30,5 @@ Para alterar o threshold de features consecutivas:
 Para alterar o tamanho do filtro de bloom 
   -./header/config.h 
   -linha 22 
-  -o tamanho deve estar em bytes!
+  -o tamanho deve estar em bytes
+  
