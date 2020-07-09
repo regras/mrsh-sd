@@ -16,8 +16,9 @@ Para gerar um digest com base em uma lista:
   
   Execute:
   
-    
+    ```bash
     $./mrsh_net -d cb_target_set.txt > Digest
+    ```
    
 Para comparar uma lista de arquivos com um digest gerado anteriormente:
   
