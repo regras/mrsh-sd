@@ -15,18 +15,19 @@ Para gerar um digest com base em uma lista:
   
   execute:
   
-    ```
+    
     $./mrsh_net -d cb_target_set.txt > Digest
-    ```
+   
 Para comparar uma lista de arquivos com um digest gerado anteriormente:
   
   Coloque o path completo para os arquivos no arquivo cb_target_digest.txt 
   
   Execute:
   
-    ```
+    
     $ ./mrsh_net -i Digest cb_target_set.txt
-    ```
+    
+    
 Para alterar o formato da saída: 
   
     Arquivo ./src/main.c 
