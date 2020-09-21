@@ -1,100 +1,100 @@
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000004.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000114.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000251.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000268.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000698.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000968.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001466.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001645.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001647.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002375.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002394.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002403.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002687.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003646.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004420.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004862.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004863.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002661.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003317.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003345.doc
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000047.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000048.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000050.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000397.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000777.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001093.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001110.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001978.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002879.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004705.xls
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000314.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000558.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000712.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000985.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000986.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001891.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001911.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004113.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004610.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004968.ppt
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000197.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000189.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000199.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000214.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000816.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001329.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002107.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002120.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002123.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002245.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002933.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002950.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003041.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003485.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003497.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003751.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003892.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004338.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004515.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004915.html
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000020.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000159.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000158.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000168.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000592.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000738.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001278.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001301.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001672.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001675.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002852.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003047.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003049.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003189.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003299.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003668.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003693.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004336.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004448.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004682.pdf
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000863.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000835.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001818.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002816.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002817.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003112.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003547.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/003548.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004222.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004229.text
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000543.gif
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000545.gif
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000534.gif
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004270.gif
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004542.gif
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/001239.jpg
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/002635.jpg
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000906.jpg
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/004292.jpg
-/mnt/c/Users/joaop/Documents/shared/Abril 2020/t5/cb_target_set/000505.jpg
+/home/bizzi/IC/Databases/cb_target_set/000004.doc
+/home/bizzi/IC/Databases/cb_target_set/000114.doc
+/home/bizzi/IC/Databases/cb_target_set/000251.doc
+/home/bizzi/IC/Databases/cb_target_set/000268.doc
+/home/bizzi/IC/Databases/cb_target_set/000698.doc
+/home/bizzi/IC/Databases/cb_target_set/000968.doc
+/home/bizzi/IC/Databases/cb_target_set/001466.doc
+/home/bizzi/IC/Databases/cb_target_set/001645.doc
+/home/bizzi/IC/Databases/cb_target_set/001647.doc
+/home/bizzi/IC/Databases/cb_target_set/002375.doc
+/home/bizzi/IC/Databases/cb_target_set/002394.doc
+/home/bizzi/IC/Databases/cb_target_set/002403.doc
+/home/bizzi/IC/Databases/cb_target_set/002687.doc
+/home/bizzi/IC/Databases/cb_target_set/003646.doc
+/home/bizzi/IC/Databases/cb_target_set/004420.doc
+/home/bizzi/IC/Databases/cb_target_set/004862.doc
+/home/bizzi/IC/Databases/cb_target_set/004863.doc
+/home/bizzi/IC/Databases/cb_target_set/002661.doc
+/home/bizzi/IC/Databases/cb_target_set/003317.doc
+/home/bizzi/IC/Databases/cb_target_set/003345.doc
+/home/bizzi/IC/Databases/cb_target_set/000047.xls
+/home/bizzi/IC/Databases/cb_target_set/000048.xls
+/home/bizzi/IC/Databases/cb_target_set/000050.xls
+/home/bizzi/IC/Databases/cb_target_set/000397.xls
+/home/bizzi/IC/Databases/cb_target_set/000777.xls
+/home/bizzi/IC/Databases/cb_target_set/001093.xls
+/home/bizzi/IC/Databases/cb_target_set/001110.xls
+/home/bizzi/IC/Databases/cb_target_set/001978.xls
+/home/bizzi/IC/Databases/cb_target_set/002879.xls
+/home/bizzi/IC/Databases/cb_target_set/004705.xls
+/home/bizzi/IC/Databases/cb_target_set/000314.ppt
+/home/bizzi/IC/Databases/cb_target_set/000558.ppt
+/home/bizzi/IC/Databases/cb_target_set/000712.ppt
+/home/bizzi/IC/Databases/cb_target_set/000985.ppt
+/home/bizzi/IC/Databases/cb_target_set/000986.ppt
+/home/bizzi/IC/Databases/cb_target_set/001891.ppt
+/home/bizzi/IC/Databases/cb_target_set/001911.ppt
+/home/bizzi/IC/Databases/cb_target_set/004113.ppt
+/home/bizzi/IC/Databases/cb_target_set/004610.ppt
+/home/bizzi/IC/Databases/cb_target_set/004968.ppt
+/home/bizzi/IC/Databases/cb_target_set/000197.html
+/home/bizzi/IC/Databases/cb_target_set/000189.html
+/home/bizzi/IC/Databases/cb_target_set/000199.html
+/home/bizzi/IC/Databases/cb_target_set/000214.html
+/home/bizzi/IC/Databases/cb_target_set/000816.html
+/home/bizzi/IC/Databases/cb_target_set/001329.html
+/home/bizzi/IC/Databases/cb_target_set/002107.html
+/home/bizzi/IC/Databases/cb_target_set/002120.html
+/home/bizzi/IC/Databases/cb_target_set/002123.html
+/home/bizzi/IC/Databases/cb_target_set/002245.html
+/home/bizzi/IC/Databases/cb_target_set/002933.html
+/home/bizzi/IC/Databases/cb_target_set/002950.html
+/home/bizzi/IC/Databases/cb_target_set/003041.html
+/home/bizzi/IC/Databases/cb_target_set/003485.html
+/home/bizzi/IC/Databases/cb_target_set/003497.html
+/home/bizzi/IC/Databases/cb_target_set/003751.html
+/home/bizzi/IC/Databases/cb_target_set/003892.html
+/home/bizzi/IC/Databases/cb_target_set/004338.html
+/home/bizzi/IC/Databases/cb_target_set/004515.html
+/home/bizzi/IC/Databases/cb_target_set/004915.html
+/home/bizzi/IC/Databases/cb_target_set/000020.pdf
+/home/bizzi/IC/Databases/cb_target_set/000159.pdf
+/home/bizzi/IC/Databases/cb_target_set/000158.pdf
+/home/bizzi/IC/Databases/cb_target_set/000168.pdf
+/home/bizzi/IC/Databases/cb_target_set/000592.pdf
+/home/bizzi/IC/Databases/cb_target_set/000738.pdf
+/home/bizzi/IC/Databases/cb_target_set/001278.pdf
+/home/bizzi/IC/Databases/cb_target_set/001301.pdf
+/home/bizzi/IC/Databases/cb_target_set/001672.pdf
+/home/bizzi/IC/Databases/cb_target_set/001675.pdf
+/home/bizzi/IC/Databases/cb_target_set/002852.pdf
+/home/bizzi/IC/Databases/cb_target_set/003047.pdf
+/home/bizzi/IC/Databases/cb_target_set/003049.pdf
+/home/bizzi/IC/Databases/cb_target_set/003189.pdf
+/home/bizzi/IC/Databases/cb_target_set/003299.pdf
+/home/bizzi/IC/Databases/cb_target_set/003668.pdf
+/home/bizzi/IC/Databases/cb_target_set/003693.pdf
+/home/bizzi/IC/Databases/cb_target_set/004336.pdf
+/home/bizzi/IC/Databases/cb_target_set/004448.pdf
+/home/bizzi/IC/Databases/cb_target_set/004682.pdf
+/home/bizzi/IC/Databases/cb_target_set/000863.text
+/home/bizzi/IC/Databases/cb_target_set/000835.text
+/home/bizzi/IC/Databases/cb_target_set/001818.text
+/home/bizzi/IC/Databases/cb_target_set/002816.text
+/home/bizzi/IC/Databases/cb_target_set/002817.text
+/home/bizzi/IC/Databases/cb_target_set/003112.text
+/home/bizzi/IC/Databases/cb_target_set/003547.text
+/home/bizzi/IC/Databases/cb_target_set/003548.text
+/home/bizzi/IC/Databases/cb_target_set/004222.text
+/home/bizzi/IC/Databases/cb_target_set/004229.text
+/home/bizzi/IC/Databases/cb_target_set/000543.gif
+/home/bizzi/IC/Databases/cb_target_set/000545.gif
+/home/bizzi/IC/Databases/cb_target_set/000534.gif
+/home/bizzi/IC/Databases/cb_target_set/004270.gif
+/home/bizzi/IC/Databases/cb_target_set/004542.gif
+/home/bizzi/IC/Databases/cb_target_set/001239.jpg
+/home/bizzi/IC/Databases/cb_target_set/002635.jpg
+/home/bizzi/IC/Databases/cb_target_set/000906.jpg
+/home/bizzi/IC/Databases/cb_target_set/004292.jpg
+/home/bizzi/IC/Databases/cb_target_set/000505.jpg

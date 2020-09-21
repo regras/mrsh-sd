@@ -46,41 +46,45 @@ void destroy_bf(BLOOMFILTER *bf) {
 void add_hash_to_bloomfilter(BLOOMFILTER *bf, 
 							uint256 hash_val, 
 							unsigned char *cbf){
-	
 	uint64 masked_bits, byte_pos;
 	short bit_pos;
 	unsigned char *test = (unsigned char*)hash_val; // the variable test will contain the hash
 	
-	//for(int r = 0;r<8;r++)printf("Hash[%d] %X\n",r,hash_val[r]);
+	//for(int r = 0;r<8;r++) printf("Hash[%d] %X\n",r,hash_val[r]);
 	
 	uint64 *p = (uint64*)hash_val; // the pointer p will point to the hash
-	
 	//as partes 5, 6 e 7 do hash são lixo
 
+//printf("\n");
 	// Concatena hash_val[r] e hash_val[r+1]
 	uint64 tmpHash = (((uint64)hash_val[1]<<32) ^ hash_val[0]); 
 	
 	// the temporary hash is a power of 32 bit shift (to the left) to the first hash
 	for(int j = 0; j < SUBHASHES; j++) {
 		
+        //printf("TEMP HASH = %X\n",tmpHash); 
+    	//printf("teste  = %s\n",test);
 
 		masked_bits = tmpHash & MASK;
-		
+		//printf("masked bits = %X\n",masked_bits);
+
 		byte_pos = masked_bits >> 3; // right bit shift of teh masked bit obtained - big number
 
 		bit_pos = masked_bits & 0x7; // and of the masked bits and the number 7, that is, 
 
 		bf -> array[byte_pos] |= (1<<(bit_pos));
-        p = (uint64*)&test[SHIFTOPS*(j+1) / 8]; 
-        tmpHash = *p >> ((SHIFTOPS*(j+1)) % 8); 
-		// the value of the tmpHash will be a right bit shift of the value obtained by the pointer!
 
-        if(USE_COUNTING_BF){ // if we area using counting bf the position pointed by the masked bits is increased one time
-        	if(cbf[masked_bits] < 255)
-        		cbf[masked_bits]++;
-       
-        }
+      //  printf("POS = %d\n",SHIFTOPS*(j+1)/8);
+
+        p = (uint64*)&test[SHIFTOPS*(j+1) / 8];
+	
+	//	printf("p = %llX\n",*p);
+	//	printf(" shift = %d\n",(SHIFTOPS*(j+1)) % 8 );
+        tmpHash = *p >> ((SHIFTOPS*(j+1)) % 8);
+
+		// the value of the tmpHash will be a right bit shift of the value obtained by the pointer!
 	}
+       // 		printf("######\n");
 
 	
 

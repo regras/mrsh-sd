@@ -20,7 +20,7 @@
 #include <dirent.h>
 #include<sys/types.h>
 #include<errno.h>
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 #include "../header/main.h"
 #include "../header/helper.h"
 #include "../header/sdhash.h"
@@ -29,11 +29,15 @@
 using std::cout;
 using namespace boost::filesystem;
 // Global variable for the different modes
+
+
 MODES *mode;
 extern char *optarg;
 extern int optind;
 unsigned char *cbf;
+
 int USE_COUNTING_BF = 0;
+
 float MIN_ENTROPY = 0.0;
 char *filetype;
 static int counter=0;
@@ -61,6 +65,7 @@ static void show_help(void) {
 					"         -h: Print this help message \n\n");
 }
 
+
 static void initalizeDefaultModes() {
 	mode = (MODES *) malloc(sizeof(MODES));
 	mode->helpmessage = false;
@@ -72,7 +77,9 @@ static void initalizeDefaultModes() {
 	mode->list = false;
 }
 
+
 int main(int argc, char **argv) {
+	
 	int i;	
 	initalizeDefaultModes();
 	filetype = malloc(5);
@@ -128,6 +135,13 @@ int main(int argc, char **argv) {
 	unsigned long cbf_size = (unsigned int) BF_SIZE_IN_BYTES * 8; //for all bits we need 1 byte ... *8
 	initialize_settings();		//Bloom filter settings
 
+	BLOOMFILTER *bf = init_empty_BF();
+	cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf 
+	memset(cbf, 0, cbf_size); 
+
+
+
+
 	//read db from file and compare stuff against it
 	if (mode->readDB) {
 		
@@ -153,6 +167,7 @@ int main(int argc, char **argv) {
 			fgets (LINE, 500 ,list);
 			char *filename;
 			filename = strtok(LINE,"\n");
+			//printf("%s\n",filename);
 			if (endsWithType(filename)) continue;
 			
 			FILE *file = getFileHandle(filename);
@@ -184,23 +199,19 @@ int main(int argc, char **argv) {
 			memset(cbf, 0, cbf_size); // sets all cbf's positions to zero
 		}
 		int size;
+		
 		//fill bloom filter with all files
 		for (int j = optind; j < argc; j++) {
-			if (endsWithType(argv[j])) {
+			if(endsWithType(argv[j])){
 				continue;
 			}
+		
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
 			hashFileAndDo(bf, 1, 0, size,argv[j],cbf);	 
 			fclose(file);
+		
 		}
-
-
-		for (int i = 0; i < cbf_size; i++) {
-			if (cbf[i] >= UNSET_BITS_THRES) // if the cbf position is greater than 15, the bf's position is unset!
-				unset_bit(bf, i);
-		}
-
 
 		free(cbf);
 		print_bf(bf);
@@ -214,6 +225,7 @@ int main(int argc, char **argv) {
 		// Find the # of lines = # of files to search
 		list = fopen(argv[2],"r");
 		int total_de_linhas = 0;
+		
 		while(fgets(LINE,500,list)){
 			total_de_linhas++;
 			char *filename;
@@ -222,6 +234,7 @@ int main(int argc, char **argv) {
 			temporary = getFileHandle(filename);
 			fclose(temporary);
 		}
+		
 		fseek(list, 0 , SEEK_SET);
 
 		// Begin insertion
@@ -248,10 +261,11 @@ int main(int argc, char **argv) {
 			fclose(file);
 		}
 
-		for (int i = 0; i < cbf_size; i++) {
+		/*for (int i = 0; i < cbf_size; i++) {
 			if (cbf[i] >= UNSET_BITS_THRES) // if the cbf position is bigger than 15, the bf's position is unset!
 				unset_bit(bf, i);
-						}
+						}*/
+	 	
 	 	fprintf(log_file,"All files inserted, now printing bf\n");
 		
 		free(cbf);
@@ -361,7 +375,7 @@ int main(int argc, char **argv) {
 
 char* FindFileName(char *digest){
 	unsigned char *token;
-	token =	strstr(digest,"t5/");
+	token =	strstr(digest,"cb_target_set/");
 	token =	strtok(token,"/"); 
 	return strtok(NULL,"\"");
 }
@@ -379,7 +393,7 @@ void evaluation(BLOOMFILTER *bf,int size,char *filename) {
 	char* name;
 	name = FindFileName(filename);
 
-	if (longest_run >=MIN_RUN){
+	if (longest_run >= 0){
 		printf("%s:%d of %d(Longest run %d)\n", name, found, total,longest_run);
 		fprintf(results_handle,"%s\t%d\t%d\t%d\n", name, found, total,longest_run);
 	}

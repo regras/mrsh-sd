@@ -18,7 +18,9 @@
 #include <sys/stat.h>
 #include <openssl/sha.h>
 #include <sys/socket.h>
+
 //#include <sys/types.h>
+
 #include <arpa/inet.h>
 #include<boost/cstdint.hpp>
 
@@ -289,17 +291,34 @@ void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint1
 
                     // sintaxe sha1: sha1(input,tamanho,saida);
                     //fixed hash size input of 64 bits
+                    
+
                     SHA1(file_buffer + chunk_pos + i, pop_win_size, (uint8_t *)sha1_hash);
-   
-                    if(doWhat == 1){ // this is used when we are creating the bf, option -g
+                   
+                   /* for (int i = 0; i < 5; ++i)
+                       printf("%X",sha1_hash[i]);
+                    printf("\n");*/
+
+                    switch(doWhat){
+                        case 1: 
+                            add_hash_to_bloomfilter(bf, sha1_hash, cbf);
+                        case 2:
+                            createResultsSummary(bf,sha1_hash,results_summary);
+                        default:
+                            remove_hash_from_filter(bf, (unsigned int*)sha1_hash, cbf);
+                    }
+
+  /*                  if(doWhat == 1){ // this is used when we are creating the bf, option -g
                         add_hash_to_bloomfilter(bf, sha1_hash, cbf); // adding the feature to the bf
                     }
                     else if(doWhat == 2){ // used when we are checking a file againt a filter created previously
                         createResultsSummary(bf,sha1_hash,results_summary);
                     }
                     else{
-                    remove_hash_from_filter(bf, (unsigned int*)sha1_hash, cbf); // used in case of feature removal
-                    }
+                        remove_hash_from_filter(bf, (unsigned int*)sha1_hash, cbf); // used in case of feature removal
+                    }*/
+                    
+
                     }
             //last_block_index = i + 1;
             }                 

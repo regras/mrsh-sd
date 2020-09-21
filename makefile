@@ -6,10 +6,10 @@ NAME=mrsh_net
 all: debug
 
 debug: ${PROJECT_SRC} ${PROJECT_HDR}
-	g++ -w -ggdb  -fpermissive -D_DEFAULT_SOURCE -o ${NAME} ${PROJECT_SRC} -lm -lcrypto -lssl -I/home/bizzi/Documents/boost_1_72_0 -L/home/bizzi/Documents/boost_1_72_0/stage/lib -lboost_system -lboost_filesystem
+	g++ -w -ggdb  -fpermissive -D_DEFAULT_SOURCE -o ${NAME} ${PROJECT_SRC} -lm -lcrypto -lssl -I./boost_1_73_0/boost -L./boost_1_73_0/stage/lib   -lboost_system -lboost_filesystem
 
 mrsh: ${PROJECT_SRC} ${PROJECT_HDR}
-	g++  -w -O3 -fpermissive -D_DEFAULT_SOURCE -o ${NAME} ${PROJECT_SRC} -lm -lcrypto -lssl -I/home/bizzi/Documents/boost_1_72_0 -L/home/bizzi/Documents/boost_1_72_0/stage/lib -lboost_system -lboost_filesystem
+	g++  -w -O3 -fpermissive -D_DEFAULT_SOURCE -o ${NAME} ${PROJECT_SRC} -lm -lcrypto -lssl -I./boost_1_73_0/boost -L./boost_1_73_0/stage/lib -lboost_system -lboost_filesystem
 
 
 #pg for profiler, gprof. 

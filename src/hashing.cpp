@@ -41,7 +41,8 @@ int createResultsSummary(BLOOMFILTER *bf, uint256 hash_val, int *results_summary
 		if (results_summary[3] > results_summary[2]) //check if there is a long run
 			results_summary[2] = results_summary[3];
 		return 1;
-	} else
+	} 
+	else
 		results_summary[3] = 0;
 		results_summary[0]++;
 	return 0;

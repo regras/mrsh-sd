@@ -3,6 +3,21 @@ Ferramenta desenvolvida com base na função sdhash e a estratégia MRSH-NET
 
 
 ## Instruções
+
+### Bibloteca Boost:
+1. Extraia a pasta da biblioteca para a pasta atual do MRSH-SD
+2. Dentro da pasta da biblioteca execute:
+```  
+$ ./bootstrap.sh
+```
+3. Execute em seguida:
+```  
+$ ./b2
+```
+4. Por fim:
+```  
+$ ./b2 install
+```
 ### Para compilar:
 1.  Execute:
 ```  

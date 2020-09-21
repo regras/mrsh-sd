@@ -17,9 +17,19 @@
 
 #define UNSET_BITS_THRES		256//256 is ignore
 
+// min run vs tamanho do filtro
+/*
+1	 	268435456
+2		67108864
+3-4		33554432
+5-11	16777216 
+12-54	8388608
+55-200	4194304
+*/
 
 
-#define BF_SIZE_IN_BYTES		19074979//18309789 //33554432 //9154894 //16384 //33554432 //Filter size Bytes
+								
+#define BF_SIZE_IN_BYTES 		536870912
 #define SUBHASHES               5
 
 #define SKIP_FIRST				1	//Skip first block which often contains header info
