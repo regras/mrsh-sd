@@ -57,7 +57,7 @@ Line 16 - min_run
 ```
 #define MIN_RUN <number>
 ```
-### To chance the Bloom Filter size
+### To change the Bloom Filter size
 File ./header/config.h  
 Line 22  
 Obs.: The size must be power of two and expressed in bytes.
