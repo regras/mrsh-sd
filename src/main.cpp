@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   main.c
  * Author: Frank Breitinger
  * Created on 28. April 2013, 19:15
@@ -14,7 +14,7 @@
 #include<sys/stat.h>
 #include<fstream>
 #include <openssl/md5.h>
-#include <limits.h>		
+#include <limits.h>
 #include <vector>
 #include <iostream>
 #include <dirent.h>
@@ -42,10 +42,8 @@ float MIN_ENTROPY = 0.0;
 char *filetype;
 static int counter=0;
 char LINE[500];
-
-FILE *log_file;
 FILE *list;
-FILE *results_handle;
+
 
 
 static void show_help(void) {
@@ -79,12 +77,12 @@ static void initalizeDefaultModes() {
 
 
 int main(int argc, char **argv) {
-	
-	int i;	
+
+	int i;
 	initalizeDefaultModes();
 	filetype = malloc(5);
 	filetype = ".foo";
-	log_file = fopen(mylog,"w");
+
 
 	char *listName = NULL;
 
@@ -136,21 +134,21 @@ int main(int argc, char **argv) {
 	initialize_settings();		//Bloom filter settings
 
 	BLOOMFILTER *bf = init_empty_BF();
-	cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf 
-	memset(cbf, 0, cbf_size); 
+	cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf
+	memset(cbf, 0, cbf_size);
 
 
 
 
 	//read db from file and compare stuff against it
 	if (mode->readDB) {
-		
-		results_handle = fopen(results_file,"w");
+
+
 		USE_COUNTING_BF = 0;
 		BLOOMFILTER *bf = init_empty_BF();
 
 		// Reads the BF to the memory
-		readFileToBF(listName, bf); 
+		readFileToBF(listName, bf);
 		unsigned char *buffer;
 		int size;
 
@@ -162,55 +160,49 @@ int main(int argc, char **argv) {
 		fseek(list, 0 , SEEK_SET);
 
 		// Find the filename in each line and search the file in bf
-		// Printing each result in a log_file file
-		for (int j = 1	; j <= total_de_linhas; j++) {	
+		for (int j = 1	; j <= total_de_linhas; j++) {
 			fgets (LINE, 500 ,list);
 			char *filename;
 			filename = strtok(LINE,"\n");
 			//printf("%s\n",filename);
 			if (endsWithType(filename)) continue;
-			
+
 			FILE *file = getFileHandle(filename);
 			size = find_file_size(file);
 			evaluation(bf,size,filename);
 
-			
+
 			fclose(file);
 
 		}
-
-		log_file = fopen(mylog,"a");
-	 	fprintf(log_file,"All files checked\n");
 		destroy_bf(bf);
-		fprintf(log_file,"Exiting now\n");
-		fclose(log_file);
-		fclose(results_handle);
+
 		exit(1);
 	}
 
 	//read all arguments, create the bloomfilter, and print it to stdout
 	if (mode->generateBF || optind == 1) {
 
-		//Create new BF including setting counting Bloom filter	
-		
+		//Create new BF including setting counting Bloom filter
+
 		BLOOMFILTER *bf = init_empty_BF();
 		if (USE_COUNTING_BF == 1) {
-			cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf 
+			cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf
 			memset(cbf, 0, cbf_size); // sets all cbf's positions to zero
 		}
 		int size;
-		
+
 		//fill bloom filter with all files
 		for (int j = optind; j < argc; j++) {
 			if(endsWithType(argv[j])){
 				continue;
 			}
-		
+
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
-			hashFileAndDo(bf, 1, 0, size,argv[j],cbf);	 
+			hashFileAndDo(bf, 1, 0, size,argv[j],cbf);
 			fclose(file);
-		
+
 		}
 
 		free(cbf);
@@ -225,7 +217,7 @@ int main(int argc, char **argv) {
 		// Find the # of lines = # of files to search
 		list = fopen(argv[2],"r");
 		int total_de_linhas = 0;
-		
+
 		while(fgets(LINE,500,list)){
 			total_de_linhas++;
 			char *filename;
@@ -234,17 +226,17 @@ int main(int argc, char **argv) {
 			temporary = getFileHandle(filename);
 			fclose(temporary);
 		}
-		
+
 		fseek(list, 0 , SEEK_SET);
 
 		// Begin insertion
 		BLOOMFILTER *bf = init_empty_BF();
-		
+
 		if (USE_COUNTING_BF == 1) {
-			cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf 
+			cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf
 			memset(cbf, 0, cbf_size); // sets all cbf's positions to zero
 		}
-	
+
 		int size;
 
 		// Inserting every file listed
@@ -252,29 +244,17 @@ int main(int argc, char **argv) {
 			fgets (LINE, 500 ,list);
 			char *filename;
 			filename = strtok(LINE,"\n");
-	
+
 			if (endsWithType(filename))continue;
 			FILE *file = getFileHandle(filename);
 			size = find_file_size(file);
-			hashFileAndDo(bf, 1, 0, size,LINE,cbf);	 
-			fprintf(log_file,"|Current File:%s|Size = %i|Inserted: = %i/%i|\n",filename,size,j,total_de_linhas);
+			hashFileAndDo(bf, 1, 0, size,LINE,cbf);
 			fclose(file);
 		}
 
-		/*for (int i = 0; i < cbf_size; i++) {
-			if (cbf[i] >= UNSET_BITS_THRES) // if the cbf position is bigger than 15, the bf's position is unset!
-				unset_bit(bf, i);
-						}*/
-	 	
-	 	fprintf(log_file,"All files inserted, now printing bf\n");
-		
 		free(cbf);
 		print_bf(bf);
 		destroy_bf(bf);
-
-		fprintf(log_file,"Bf printed and closed, exiting now\n");
-	//	printf("total size  = %llu\n",total_size2);
-		fclose(log_file);
 		exit(1);
 
 	}
@@ -311,12 +291,12 @@ int main(int argc, char **argv) {
 
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
-		
+
 			hashFileAndDo(bf,  3, 0, size,argv[j],cbf);
 			evaluation(bf, size,argv[j]);
 			hashFileAndDo(bf,1, 0, size,argv[j],cbf);
 
-			 
+
 			fclose(file);
 		}
 
@@ -345,7 +325,7 @@ int main(int argc, char **argv) {
 			size = find_file_size(file);
 			hashFileAndDo(tmp_BF, 1, 0, size,argv[j],cbf);
 
-			 
+
 			fclose(file);
 		}
 		destroy_bf(tmp_BF);
@@ -362,27 +342,27 @@ int main(int argc, char **argv) {
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
 			evaluation(bf, size,argv[j]);
-			 
+
 			fclose(file);
 		}
 
 		destroy_bf(bf);
 		exit(1);
 }
-	
+
 
 }
 
 char* FindFileName(char *digest){
 	unsigned char *token;
 	token =	strstr(digest,"cb_target_set/");
-	token =	strtok(token,"/"); 
+	token =	strtok(token,"/");
 	return strtok(NULL,"\"");
 }
 
 /* Função que faz a comparação entre os objetos inseridos */
 void evaluation(BLOOMFILTER *bf,int size,char *filename) {
-	
+
 	unsigned int found = 0,total = 0,longest_run = 0;
 	int *results;
 
@@ -395,11 +375,9 @@ void evaluation(BLOOMFILTER *bf,int size,char *filename) {
 
 	if (longest_run >= 0){
 		printf("%s:%d of %d(Longest run %d)\n", name, found, total,longest_run);
-		fprintf(results_handle,"%s\t%d\t%d\t%d\n", name, found, total,longest_run);
 	}
 	else{
 		printf("%s not found, min long run not long enough \n",name);
-		fprintf(results_handle,"%s\t%d\t%d\t%d\n", name, found, total,longest_run);
 	}
 }
 
@@ -410,4 +388,3 @@ int endsWithType(char *str) {
 	char *dot = strrchr(str, '.');
 	return strcmp(dot, filetype) == 0;
 }
-
