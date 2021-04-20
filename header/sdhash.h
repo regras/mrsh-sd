@@ -11,8 +11,7 @@ int *SDHASH_EXT(BLOOMFILTER *bf,
  int doWhat,
  char *argv,
  unsigned int size,
- unsigned int start,
- unsigned char *cbf);
+ unsigned int start);
 //int *results_summary = (unsigned int *) calloc(0, 4*sizeof(int));
 
 #endif

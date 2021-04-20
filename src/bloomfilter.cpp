@@ -43,8 +43,7 @@ void destroy_bf(BLOOMFILTER *bf) {
  * adds a hash value (eg. FNV) to the Bloom filter
  */
 void add_hash_to_bloomfilter(BLOOMFILTER *bf,
-							uint256 hash_val,
-							unsigned char *cbf){
+							uint256 hash_val){
 	uint64 masked_bits, byte_pos;
 	short bit_pos;
 	unsigned char *test = (unsigned char*)hash_val; // the variable test will contain the hash
@@ -110,7 +109,7 @@ void unset_bit(BLOOMFILTER *bf, unsigned int bit){
 
 
 
-short remove_hash_from_filter(BLOOMFILTER *bf, uint256 hash_val, unsigned char *cbf){
+short remove_hash_from_filter(BLOOMFILTER *bf, uint256 hash_val){
 
 	unsigned int masked_bits, byte_pos;
 	short bit_pos;
@@ -121,14 +120,6 @@ short remove_hash_from_filter(BLOOMFILTER *bf, uint256 hash_val, unsigned char *
 	for(int j=0;j<SUBHASHES;j++) {
 		//get least significant bytes and use one relevant by AND MASK
 		masked_bits = tmpHash & MASK;
-
-
-        if(USE_COUNTING_BF){
-        	if(cbf[masked_bits] > 0)
-        		cbf[masked_bits]--;
-    		if(cbf[masked_bits] == 1)
-    			unset_bit(bf, masked_bits);
-        }
 
         //shift and continue
         p = (uint64*)&test[SHIFTOPS*(j+1) / 8];

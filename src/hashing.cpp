@@ -11,11 +11,10 @@ int  *hashFileAndDo(BLOOMFILTER *bf,
 	int doWhat,
 	unsigned int start,
 	unsigned int stop,
-	char *argv,
-	unsigned char* cbf) {
+	char *argv) {
 
 	// aqui entra o nosso sdhash!
-	return SDHASH_EXT(bf,doWhat,argv,stop,start,cbf);
+	return SDHASH_EXT(bf,doWhat,argv,stop,start);
 }
 
 

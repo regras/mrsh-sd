@@ -11,8 +11,8 @@
 #include <time.h>
 #include <string.h>
 #include <string>
-#include<sys/stat.h>
-#include<fstream>
+#include <sys/stat.h>
+#include <fstream>
 #include <openssl/md5.h>
 #include <limits.h>
 #include <vector>
@@ -34,9 +34,6 @@ using namespace boost::filesystem;
 MODES *mode;
 extern char *optarg;
 extern int optind;
-unsigned char *cbf;
-
-int USE_COUNTING_BF = 0;
 
 float MIN_ENTROPY = 0.0;
 char *filetype;
@@ -130,12 +127,11 @@ int main(int argc, char **argv) {
 	}
 
 
-	unsigned long cbf_size = (unsigned int) BF_SIZE_IN_BYTES * 8; //for all bits we need 1 byte ... *8
+
 	initialize_settings();		//Bloom filter settings
 
 	BLOOMFILTER *bf = init_empty_BF();
-	cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf
-	memset(cbf, 0, cbf_size);
+
 
 
 
@@ -144,7 +140,7 @@ int main(int argc, char **argv) {
 	if (mode->readDB) {
 
 
-		USE_COUNTING_BF = 0;
+
 		BLOOMFILTER *bf = init_empty_BF();
 
 		// Reads the BF to the memory
@@ -186,10 +182,7 @@ int main(int argc, char **argv) {
 		//Create new BF including setting counting Bloom filter
 
 		BLOOMFILTER *bf = init_empty_BF();
-		if (USE_COUNTING_BF == 1) {
-			cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf
-			memset(cbf, 0, cbf_size); // sets all cbf's positions to zero
-		}
+
 		int size;
 
 		//fill bloom filter with all files
@@ -200,12 +193,11 @@ int main(int argc, char **argv) {
 
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
-			hashFileAndDo(bf, 1, 0, size,argv[j],cbf);
+			hashFileAndDo(bf, 1, 0, size,argv[j]);
 			fclose(file);
 
 		}
 
-		free(cbf);
 		print_bf(bf);
 		destroy_bf(bf);
 		exit(1);
@@ -232,10 +224,6 @@ int main(int argc, char **argv) {
 		// Begin insertion
 		BLOOMFILTER *bf = init_empty_BF();
 
-		if (USE_COUNTING_BF == 1) {
-			cbf = (unsigned char*) malloc(cbf_size); // creates a cbf with 8 times the size of a normal bf
-			memset(cbf, 0, cbf_size); // sets all cbf's positions to zero
-		}
 
 		int size;
 
@@ -248,11 +236,11 @@ int main(int argc, char **argv) {
 			if (endsWithType(filename))continue;
 			FILE *file = getFileHandle(filename);
 			size = find_file_size(file);
-			hashFileAndDo(bf, 1, 0, size,LINE,cbf);
+			hashFileAndDo(bf, 1, 0, size,LINE);
 			fclose(file);
 		}
 
-		free(cbf);
+
 		print_bf(bf);
 		destroy_bf(bf);
 		exit(1);
@@ -263,8 +251,7 @@ int main(int argc, char **argv) {
 	if (mode->fp_mode || optind == 1) {
 
 		BLOOMFILTER *bf = init_empty_BF();
-		if (USE_COUNTING_BF == 1)
-			cbf = (unsigned char*) calloc(1, cbf_size);
+
 
 
 		int size;
@@ -275,14 +262,11 @@ int main(int argc, char **argv) {
 				continue;
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(*argv[j]);
-			hashFileAndDo(bf, 1, 0, size,argv[j],cbf);
+			hashFileAndDo(bf, 1, 0, size,argv[j]);
 			fclose(file);
 		}
-		//unsetting all bits that set to often (over threshold)
-		for (int i = 0; i < cbf_size; i++) {
-			if (cbf[i] >= UNSET_BITS_THRES)
-				unset_bit(bf, i);
-		}
+
+
 		//do false positive test by using counting bloom filter to delete a file and compare it afterwards
 		//printf("fp-mode - MIN_ENTROPY: %.2f, UNSET_BITS_THRES: %i, MIN_RUN: %i, BLOCK_SIZE: %i (filetyp: %s) \n", MIN_ENTROPY, UNSET_BITS_THRES, MIN_RUN, BLOCK_SIZE, filetype);
 		for (int j = optind; j < argc; j++) {
@@ -292,9 +276,9 @@ int main(int argc, char **argv) {
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
 
-			hashFileAndDo(bf,  3, 0, size,argv[j],cbf);
+			hashFileAndDo(bf,  3, 0, size,argv[j]);
 			evaluation(bf, size,argv[j]);
-			hashFileAndDo(bf,1, 0, size,argv[j],cbf);
+			hashFileAndDo(bf,1, 0, size,argv[j]);
 
 
 			fclose(file);
@@ -310,9 +294,6 @@ int main(int argc, char **argv) {
 		BLOOMFILTER *bf = init_empty_BF();
 		readFileToBF(listName, bf);
 
-		if (USE_COUNTING_BF == 1)
-					cbf = (unsigned char*) calloc(1, cbf_size);
-
 
 		unsigned char *buffer;
 		int size;
@@ -323,19 +304,13 @@ int main(int argc, char **argv) {
 		for (int j = optind; j < argc; j++) {
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
-			hashFileAndDo(tmp_BF, 1, 0, size,argv[j],cbf);
+			hashFileAndDo(tmp_BF, 1, 0, size,argv[j]);
 
 
 			fclose(file);
 		}
 		destroy_bf(tmp_BF);
 
-
-		//unsetting all bits that set to often (over threshold)
-		for (int i = 0; i < cbf_size; i++) {
-			if (cbf[i] >= UNSET_BITS_THRES)
-				unset_bit(bf, i);
-		}
 
 		//compare files to DB
 		for (int j = optind; j < argc; j++) {
@@ -366,7 +341,7 @@ void evaluation(BLOOMFILTER *bf,int size,char *filename) {
 	unsigned int found = 0,total = 0,longest_run = 0;
 	int *results;
 
-	results = hashFileAndDo(bf, 2, 0, size,filename,0);
+	results = hashFileAndDo(bf, 2, 0, size,filename);
 	found = *(results+1);
 	total = *(results)+ found;
 	longest_run = *(results+2);

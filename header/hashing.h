@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   hashing.h
  * Author: Frank Breitinger
  *
@@ -20,7 +20,7 @@
 
 //int         hashFileToBF(BLOOMFILTER *bf, FILE *handle, unsigned char* cbf);
 //int 		*hashAndcompare(BLOOMFILTER *bf, FILE *handle);
-int			*hashFileAndDo(BLOOMFILTER *bf, int doWhat, unsigned int start, unsigned int stop,char *argv,unsigned char *cbf);
+int			*hashFileAndDo(BLOOMFILTER *bf, int doWhat, unsigned int start, unsigned int stop,char *argv);
 int 		createResultsSummary(BLOOMFILTER *bf, uint256 hash_val, int *results_summary);
 void 		hexDump (char *desc, void *addr, int len);
 double 		entropy(int freqArray[], int size);
@@ -28,4 +28,3 @@ double 		entropy(int freqArray[], int size);
 uint32      roll_hashx(unsigned char c, uchar window[], uint32 rhData[]);
 
 #endif	/* HASHING_H */
-

@@ -16,7 +16,7 @@
 #include "boost/filesystem.hpp"
 
 FILE    *getFileHandle(char *filename);
-void 		addPathToBloomfilter(BLOOMFILTER *bf, char *filename, unsigned char* cbf);
+void 		addPathToBloomfilter(BLOOMFILTER *bf, char *filename);
 void 		evaluation(BLOOMFILTER *bf, int size,char *argv);
 int	 		endsWithType(char *str);
 //extern *results_summary;

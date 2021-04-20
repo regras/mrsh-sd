@@ -276,7 +276,7 @@ void gen_chunk_scores( const uint16_t *chunk_ranks, const uint64_t chunk_size, u
             }
             }
         }
-void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint16_t *chunk_scores, const uint64_t chunk_size,BLOOMFILTER *bf, int doWhat,unsigned char *cbf) {
+void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint16_t *chunk_scores, const uint64_t chunk_size,BLOOMFILTER *bf, int doWhat) {
     uint64_t i;
     unsigned int sha1_hash[5];
     results_summary[0] = 0,results_summary[1]=0,results_summary[2] = 0, results_summary[3] = 0;
@@ -300,21 +300,21 @@ void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint1
 
                     switch(doWhat){
                         case 1:
-                            add_hash_to_bloomfilter(bf, sha1_hash, cbf);
+                            add_hash_to_bloomfilter(bf, sha1_hash);
                         case 2:
                             createResultsSummary(bf,sha1_hash,results_summary);
                         default:
-                            remove_hash_from_filter(bf, (unsigned int*)sha1_hash, cbf);
+                            remove_hash_from_filter(bf, (unsigned int*)sha1_hash);
                     }
 
   /*                  if(doWhat == 1){ // this is used when we are creating the bf, option -g
-                        add_hash_to_bloomfilter(bf, sha1_hash, cbf); // adding the feature to the bf
+                        add_hash_to_bloomfilter(bf, sha1_hash); // adding the feature to the bf
                     }
                     else if(doWhat == 2){ // used when we are checking a file againt a filter created previously
                         createResultsSummary(bf,sha1_hash,results_summary);
                     }
                     else{
-                        remove_hash_from_filter(bf, (unsigned int*)sha1_hash, cbf); // used in case of feature removal
+                        remove_hash_from_filter(bf, (unsigned int*)sha1_hash); // used in case of feature removal
                     }*/
 
 
@@ -336,7 +336,7 @@ void gen_block_sdbf_mt( uint8_t *file_buffer, uint64_t file_size, uint64_t block
         gen_chunk_ranks( file_buffer+block_size*qt, rem, chunk_ranks, 0);
         }
     }
-void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_size,BLOOMFILTER *bf, int doWhat,unsigned char *cbf){
+void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_size,BLOOMFILTER *bf, int doWhat){
         //assert( chunk_size > pop_win_size); // aborta caso ocorra oque está descrito entre parenteses
         uint32_t i, k, sum; // declara as variaveis
         int32_t score_histo[66];  // Score histogram
@@ -365,7 +365,7 @@ void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_si
             }
             //allowed = max_elem-sum;
 
-            gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, chunk_size,bf,doWhat,cbf);
+            gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, chunk_size,bf,doWhat);
 
         }
 
@@ -373,14 +373,14 @@ void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_si
 
             gen_chunk_ranks( file_buffer+qt*chunk_size, rem, chunk_ranks, 0);
             gen_chunk_scores( chunk_ranks, rem, chunk_scores, 0);
-            gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, rem, bf,doWhat,cbf);
+            gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, rem, bf,doWhat);
         }
 
         free( chunk_ranks);
         free( chunk_scores);
 
         }
-void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t msize,BLOOMFILTER *bf, int doWhat,unsigned int start,unsigned char *cbf){
+void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t msize,BLOOMFILTER *bf, int doWhat,unsigned int start){
     entr64_table_init_int();
        uint64_t chunk_size; // unsigned int de 64 bits
         uint8_t *bufferinput; // unsigned int de 8 bufferinputits, ponteiro no caso
@@ -399,7 +399,7 @@ void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t ms
         orig_file_size = chunk_size; // orig_file_size recebe o tamanho do ultimo objeto lido, em chars
 
             if (!dd_block_size) {  // dd_block_size for zero
-            gen_chunk_sdbf(bufferinput,msize, 32*MB,bf,doWhat,cbf);
+            gen_chunk_sdbf(bufferinput,msize, 32*MB,bf,doWhat);
         }
         else { // block mode
 
@@ -429,8 +429,7 @@ int *SDHASH_EXT(BLOOMFILTER *bf,
  int doWhat,
  char *argv,
  unsigned int size,
- unsigned int start,
- unsigned char *cbf){
+ unsigned int start){
     // the list arg is used to decide whether we are going to use a list or a single file
     beg = start;
     struct stat file_stat;
@@ -438,7 +437,7 @@ int *SDHASH_EXT(BLOOMFILTER *bf,
     is->open(argv, ios::binary); // temos uma stream binaria, aberta de argv
     is->seekg(start);
     try{
-        sdbf(argv, is, 0, size,bf,doWhat,start,cbf);
+        sdbf(argv, is, 0, size,bf,doWhat,start);
         }
     catch (int e) {
         if (e==-2)
