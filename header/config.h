@@ -1,4 +1,4 @@
-  /* 
+  /*
  * File:   config.h
  * Author: Frank Breitinger
  *
@@ -22,14 +22,14 @@
 1	 	268435456
 2		67108864
 3-4		33554432
-5-11	16777216 
+5-11	16777216
 12-54	8388608
 55-200	4194304
 */
 
 
-								
-#define BF_SIZE_IN_BYTES 		536870912
+
+#define BF_SIZE_IN_BYTES 		33554432
 #define SUBHASHES               5
 
 #define SKIP_FIRST				1	//Skip first block which often contains header info
@@ -55,8 +55,7 @@ typedef struct{
     bool generateBF;
     bool readDB;
     bool helpmessage;
-    bool recursive;
-    bool fp_mode;
+		bool compare;
     bool all_a_all;
     bool list;
 } MODES;
@@ -72,4 +71,3 @@ extern float MIN_ENTROPY;
 
 
 #endif	/* CONFIG_H */
-

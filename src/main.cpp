@@ -56,7 +56,6 @@ static void show_help(void) {
 					"         -i: Reads DB-FILE and compares DIR/FILE against it, adapted to use a list with file names instead of a single file name, './mrsh-net -i digestname list.txt . \n"
 					"         -e: sets the minimum entropy\n"
 					"         -t  excludes a filetype, e.g., './mrsh-net -t .jpg -g DIR' filetype has to start with a '.' \n"
-					"         -r: Reads directory recursive, default no \n"
 					"         -h: Print this help message \n\n");
 }
 
@@ -65,8 +64,6 @@ static void initalizeDefaultModes() {
 	mode = (MODES *) malloc(sizeof(MODES));
 	mode->helpmessage = false;
 	mode->generateBF = false;
-	mode->recursive = true;
-	mode->fp_mode = false;
 	mode->readDB = false;
 	mode->all_a_all = false;
 	mode->list = false;
@@ -83,7 +80,7 @@ int main(int argc, char **argv) {
 
 	char *listName = NULL;
 
-	while ((i = getopt(argc, argv, "i:ghrfed:t:a:")) != -1) {
+	while ((i = getopt(argc, argv, "i:c:ghrfed:t:a:")) != -1) {
 		switch (i) {
 		case 'a':
 			listName = optarg;
@@ -92,6 +89,9 @@ int main(int argc, char **argv) {
 		case 'd':
 			mode->list = true;
 			break;
+		case 'c':
+			mode->compare = true;
+			listName = optarg;
 		case 'i':
 			mode->readDB = true;
 			listName = optarg;
@@ -99,17 +99,8 @@ int main(int argc, char **argv) {
 		case 'g':
 			mode->generateBF = true;
 			break;
-		case 'f':
-			mode->fp_mode = true;
-			break;
-		case 'e':
-			MIN_ENTROPY = atof(optarg);
-			break;
 		case 't':
 			filetype = optarg;
-			break;
-		case 'r':
-			mode->recursive = true;
 			break;
 		case 'h':
 			mode->helpmessage = true;
@@ -134,14 +125,28 @@ int main(int argc, char **argv) {
 
 
 
+/*read db from file and compare stuff against it (not a list)*/
+if(mode->compare){
+	// Reads the BF to the memory
+	readFileToBF(listName, bf);
+	int size;
+	for (int j = optind; j < argc; j++) {
+		if(endsWithType(argv[j])){
+			continue;
+		}
+		FILE *file = getFileHandle(argv[j]);
+		size = find_file_size(file);
+		evaluation(bf,size,argv[j]);
+		fclose(file);
 
+	}
+	destroy_bf(bf);
 
-	//read db from file and compare stuff against it
+	exit(1);
+}
+// read db from file and compare stuff against it (w. a list)
 	if (mode->readDB) {
 
-
-
-		BLOOMFILTER *bf = init_empty_BF();
 
 		// Reads the BF to the memory
 		readFileToBF(listName, bf);
@@ -247,47 +252,6 @@ int main(int argc, char **argv) {
 
 	}
 
-	//read all arguments, create the bloomfilter, and print it to stdout
-	if (mode->fp_mode || optind == 1) {
-
-		BLOOMFILTER *bf = init_empty_BF();
-
-
-
-		int size;
-		unsigned char *buffer;
-		//fill bloom filter with all files
-		for (int j = optind; j < argc; j++) {
-			if (endsWithType(argv[j]))
-				continue;
-			FILE *file = getFileHandle(argv[j]);
-			size = find_file_size(*argv[j]);
-			hashFileAndDo(bf, 1, 0, size,argv[j]);
-			fclose(file);
-		}
-
-
-		//do false positive test by using counting bloom filter to delete a file and compare it afterwards
-		//printf("fp-mode - MIN_ENTROPY: %.2f, UNSET_BITS_THRES: %i, MIN_RUN: %i, BLOCK_SIZE: %i (filetyp: %s) \n", MIN_ENTROPY, UNSET_BITS_THRES, MIN_RUN, BLOCK_SIZE, filetype);
-		for (int j = optind; j < argc; j++) {
-			if (!endsWithType(argv[j]) && !endsWithType(".foo"))
-				continue;
-
-			FILE *file = getFileHandle(argv[j]);
-			size = find_file_size(file);
-
-			hashFileAndDo(bf,  3, 0, size,argv[j]);
-			evaluation(bf, size,argv[j]);
-			hashFileAndDo(bf,1, 0, size,argv[j]);
-
-
-			fclose(file);
-		}
-
-		destroy_bf(bf);
-		exit(1);
-}
-
 
 	//read all arguments, create the bloomfilter, and print it to stdout
 	if (mode->all_a_all) {
@@ -345,14 +309,14 @@ void evaluation(BLOOMFILTER *bf,int size,char *filename) {
 	found = *(results+1);
 	total = *(results)+ found;
 	longest_run = *(results+2);
-	char* name;
-	name = FindFileName(filename);
+	//char* name;
+	//name = FindFileName(filename);
 
-	if (longest_run >= 0){
-		printf("%s:%d of %d(Longest run %d)\n", name, found, total,longest_run);
+	if (longest_run >= MIN_RUN){
+		printf("%s:%d of %d(Longest run %d)\n", filename, found, total,longest_run);
 	}
 	else{
-		printf("%s not found, min long run not long enough \n",name);
+		printf("%s not found, min long run not long enough \n",filename);
 	}
 }
 
