@@ -7,29 +7,10 @@
 
 //Depending on the third parameter it fills the Bloom filter (1) or it compares File against Bloom filter
 //doWhat: 1 = hashAndAdd  ; 2 = hashAndCompare ; 3 = remove
-int  *hashFileAndDo(BLOOMFILTER *bf,
-	int doWhat,
-	unsigned int start,
-	unsigned int stop,
-	char *argv) {
+int  *hashFileAndDo(BLOOMFILTER *bf,	int doWhat,	unsigned int start,	unsigned int stop,char *argv) {
 
 	// aqui entra o nosso sdhash!
 	return SDHASH_EXT(bf,doWhat,argv,stop,start);
-}
-
-
-double entropy(int freqArray[], int size) {
-	double e = 0.0;
-	double f = 0.0;
-	int i = 0;
-	for (i = 0; i <= 255; i++) {
-		if (freqArray[i] > 0) {
-			f = (double) freqArray[i] / size;
-			e -= f * log2(f);
-			freqArray[i] = 0; 		//reset
-		}
-	}
-	return e;
 }
 
 int createResultsSummary(BLOOMFILTER *bf, uint256 hash_val, int *results_summary) {

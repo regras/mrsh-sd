@@ -35,7 +35,6 @@ MODES *mode;
 extern char *optarg;
 extern int optind;
 
-float MIN_ENTROPY = 0.0;
 char *filetype;
 static int counter=0;
 char LINE[500];
@@ -48,13 +47,11 @@ static void show_help(void) {
 			"\nmrsh-sdhash  by Frank Breitinger and modified by João Pedro Bizzi Velho\n"
 					"Copyright (C) 2013 \n"
 					"\n"
-					"Usage: mrsh-net [-gh] [-s size] DIR/FILE \n"
-					"OPTIONS: -g: Generate the database and print it to std (save to a file like: './mrsh-net DIR > myDB, if it's a dir: ./dirname/* \n"
-					"             if unsetbits is used it uset them\n"
+					"Usage: mrsh_sd [-gh] [-s size] DIR/FILE \n"
+					"OPTIONS: -g: Generate the database and print it to std (save to a file like: './mrsh_sd DIR > myDB, if it's a dir: ./dirname/* \n"
 					"         -d: Generate the database using a list of files './mrsh-net -d list.txt' \n"
-					"         -f: generates the false positive for a list of files; call: ./mrsh-net -f mydir/* \n"
-					"         -i: Reads DB-FILE and compares DIR/FILE against it, adapted to use a list with file names instead of a single file name, './mrsh-net -i digestname list.txt . \n"
-					"         -e: sets the minimum entropy\n"
+					"					-c: Reads DB-FILE and compares DIR/FILE against it ./mrsh_sd -c <digest> ./dir/*"
+					"         -i: Reads DB-FILE and compares it against a list of FILES/DIRS, './mrsh-net -i digestname list.txt . \n"
 					"         -t  excludes a filetype, e.g., './mrsh-net -t .jpg -g DIR' filetype has to start with a '.' \n"
 					"         -h: Print this help message \n\n");
 }
@@ -65,6 +62,7 @@ static void initalizeDefaultModes() {
 	mode->helpmessage = false;
 	mode->generateBF = false;
 	mode->readDB = false;
+	mode->compare = false;
 	mode->all_a_all = false;
 	mode->list = false;
 }
@@ -146,7 +144,6 @@ if(mode->compare){
 }
 // read db from file and compare stuff against it (w. a list)
 	if (mode->readDB) {
-
 
 		// Reads the BF to the memory
 		readFileToBF(listName, bf);

@@ -93,42 +93,6 @@ void add_hash_to_bloomfilter(BLOOMFILTER *bf,
 
 
 
-void unset_bit(BLOOMFILTER *bf, unsigned int bit){
-	unsigned int byte_pos;
-	short bit_pos;
-
-	//get byte and bit position
-    byte_pos = bit / 8;
-    bit_pos = bit % 8;
-
-
-    bf->array[byte_pos] &= ~(1 << bit_pos);
-}
-
-
-
-
-
-short remove_hash_from_filter(BLOOMFILTER *bf, uint256 hash_val){
-
-	unsigned int masked_bits, byte_pos;
-	short bit_pos;
-	unsigned char *test = (unsigned char*)hash_val;
-
-	uint64 *p =  (uint64*)hash_val;
-	uint64 tmpHash = (((uint64)hash_val[1]<<32) ^ hash_val[0]);
-	for(int j=0;j<SUBHASHES;j++) {
-		//get least significant bytes and use one relevant by AND MASK
-		masked_bits = tmpHash & MASK;
-
-        //shift and continue
-        p = (uint64*)&test[SHIFTOPS*(j+1) / 8];
-        tmpHash = (*p) >> ((SHIFTOPS*(j+1))%8);
-	}
-	return 1;
-}
-
-
 
 short is_in_bloom(BLOOMFILTER *bf, uint256 hash_val){
 	unsigned int masked_bits, byte_pos;

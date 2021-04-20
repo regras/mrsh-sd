@@ -280,52 +280,18 @@ void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint1
     uint64_t i;
     unsigned int sha1_hash[5];
     results_summary[0] = 0,results_summary[1]=0,results_summary[2] = 0, results_summary[3] = 0;
-    int az = 0;
     if (chunk_size > pop_win_size) {
         for( i=0; i<chunk_size-pop_win_size; i++) {
             if( chunk_scores[i] > threshold) {
-                    char buf[15]; //storing the cutting hash (55 bits) temporarily
-                    int size = 0; //controling the position of each part of the hash
-                    unsigned int *hash_piece; //11 bits selected from hash
-
-                    // sintaxe sha1: sha1(input,tamanho,saida);
-                    //fixed hash size input of 64 bits
-
 
                     SHA1(file_buffer + chunk_pos + i, pop_win_size, (uint8_t *)sha1_hash);
 
-                   /* for (int i = 0; i < 5; ++i)
-                       printf("%X",sha1_hash[i]);
-                    printf("\n");*/
-
-                    switch(doWhat){
-                        case 1:
-                            add_hash_to_bloomfilter(bf, sha1_hash);
-                        case 2:
-                            createResultsSummary(bf,sha1_hash,results_summary);
-                        default:
-                            remove_hash_from_filter(bf, (unsigned int*)sha1_hash);
-                    }
-
-  /*                  if(doWhat == 1){ // this is used when we are creating the bf, option -g
-                        add_hash_to_bloomfilter(bf, sha1_hash); // adding the feature to the bf
-                    }
-                    else if(doWhat == 2){ // used when we are checking a file againt a filter created previously
-                        createResultsSummary(bf,sha1_hash,results_summary);
-                    }
-                    else{
-                        remove_hash_from_filter(bf, (unsigned int*)sha1_hash); // used in case of feature removal
-                    }*/
-
-
-                    }
-            //last_block_index = i + 1;
+                    if(doWhat == 1) add_hash_to_bloomfilter(bf, sha1_hash);
+                    else createResultsSummary(bf,sha1_hash,results_summary);
             }
         }
-       // printf("%d %d %d %d \n",results_summary[0],results_summary[1],results_summary[2],results_summary[3]);
     }
-
-
+}
 void gen_block_sdbf_mt( uint8_t *file_buffer, uint64_t file_size, uint64_t block_size) {
     // Deal with the "tail" if necessary
     uint64_t qt = file_size/block_size;
@@ -334,50 +300,50 @@ void gen_block_sdbf_mt( uint8_t *file_buffer, uint64_t file_size, uint64_t block
         uint16_t *chunk_ranks = (uint16_t *)alloc_check( ALLOC_ONLY, (block_size)*sizeof( uint16_t), "gen_block_sdbf_mt", "chunk_ranks", ERROR_EXIT);
         //uint16_t *chunk_scores = (uint16_t *)alloc_check( ALLOC_ZERO, (block_size)*sizeof( uint16_t), "gen_block_sdbf_mt", "chunk_scores", ERROR_EXIT);
         gen_chunk_ranks( file_buffer+block_size*qt, rem, chunk_ranks, 0);
-        }
     }
+}
 void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_size,BLOOMFILTER *bf, int doWhat){
-        //assert( chunk_size > pop_win_size); // aborta caso ocorra oque está descrito entre parenteses
-        uint32_t i, k, sum; // declara as variaveis
-        int32_t score_histo[66];  // Score histogram
-        uint64_t buff_size = ((file_size >> 11) + 1) << 8; // Estimate sdbf size (reallocate later)
-        buff_size = (buff_size < 256) ? 256 : buff_size;  // caso a primeira comparação for verdadeira, 256 será utilizada, caso seja falsa, o buff_size será utilizado
+  //assert( chunk_size > pop_win_size); // aborta caso ocorra oque está descrito entre parenteses
+  uint32_t i, k, sum; // declara as variaveis
+  int32_t score_histo[66];  // Score histogram
+  uint64_t buff_size = ((file_size >> 11) + 1) << 8; // Estimate sdbf size (reallocate later)
+  buff_size = (buff_size < 256) ? 256 : buff_size;  // caso a primeira comparação for verdadeira, 256 será utilizada, caso seja falsa, o buff_size será utilizado
 
-        buffer = (uint8_t *)alloc_check( ALLOC_ZERO, buff_size, "gen_chunk_sdbf", "sdbf_buffer", ERROR_EXIT); // aloca um espaço de memória do tamanho de buff_size
+  buffer = (uint8_t *)alloc_check( ALLOC_ZERO, buff_size, "gen_chunk_sdbf", "sdbf_buffer", ERROR_EXIT); // aloca um espaço de memória do tamanho de buff_size
 
-        // Chunk-based computation
-        uint64_t qt = file_size/chunk_size; // quantidade, tamanho do arquivo pelo tamanho do pedaço/feature/chunk
-        uint64_t rem = file_size % chunk_size; // remaning, resto de divisao da operaçao acima
+  // Chunk-based computation
+  uint64_t qt = file_size/chunk_size; // quantidade, tamanho do arquivo pelo tamanho do pedaço/feature/chunk
+  uint64_t rem = file_size % chunk_size; // remaning, resto de divisao da operaçao acima
 
-        uint64_t chunk_pos = 0;
-        uint16_t *chunk_ranks = (uint16_t *)alloc_check( ALLOC_ONLY, (chunk_size)*sizeof( uint16_t), "gen_chunk_sdbf", "chunk_ranks", ERROR_EXIT);
-        uint16_t *chunk_scores = (uint16_t *)alloc_check( ALLOC_ZERO, (chunk_size)*sizeof( uint16_t), "gen_chunk_sdbf", "chunk_scores", ERROR_EXIT);
+  uint64_t chunk_pos = 0;
+  uint16_t *chunk_ranks = (uint16_t *)alloc_check( ALLOC_ONLY, (chunk_size)*sizeof( uint16_t), "gen_chunk_sdbf", "chunk_ranks", ERROR_EXIT);
+  uint16_t *chunk_scores = (uint16_t *)alloc_check( ALLOC_ZERO, (chunk_size)*sizeof( uint16_t), "gen_chunk_sdbf", "chunk_scores", ERROR_EXIT);
 
-        for( i=0; i<qt; i++, chunk_pos+=chunk_size) {
-            gen_chunk_ranks( file_buffer+chunk_size*i, chunk_size, chunk_ranks, 0);
-            memset( score_histo, 0, sizeof( score_histo));
-            gen_chunk_scores( chunk_ranks, chunk_size, chunk_scores, score_histo);
-            // Calculate thresholding paremeters
-            for( k=65, sum=0; k>=threshold; k--) {
-                if( (sum <= max_elem) && (sum+score_histo[k] > max_elem))
-                    break;
-                sum += score_histo[k];
-            }
-            //allowed = max_elem-sum;
+  for( i=0; i<qt; i++, chunk_pos+=chunk_size) {
+      gen_chunk_ranks( file_buffer+chunk_size*i, chunk_size, chunk_ranks, 0);
+      memset( score_histo, 0, sizeof( score_histo));
+      gen_chunk_scores( chunk_ranks, chunk_size, chunk_scores, score_histo);
+      // Calculate thresholding paremeters
+      for( k=65, sum=0; k>=threshold; k--) {
+          if( (sum <= max_elem) && (sum+score_histo[k] > max_elem))
+              break;
+          sum += score_histo[k];
+      }
+      //allowed = max_elem-sum;
 
-            gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, chunk_size,bf,doWhat);
+      gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, chunk_size,bf,doWhat);
 
-        }
+  }
 
-        if( rem > 0) {
+  if( rem > 0) {
 
-            gen_chunk_ranks( file_buffer+qt*chunk_size, rem, chunk_ranks, 0);
-            gen_chunk_scores( chunk_ranks, rem, chunk_scores, 0);
-            gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, rem, bf,doWhat);
-        }
+      gen_chunk_ranks( file_buffer+qt*chunk_size, rem, chunk_ranks, 0);
+      gen_chunk_scores( chunk_ranks, rem, chunk_scores, 0);
+      gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, rem, bf,doWhat);
+  }
 
-        free( chunk_ranks);
-        free( chunk_scores);
+  free( chunk_ranks);
+  free( chunk_scores);
 
         }
 void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t msize,BLOOMFILTER *bf, int doWhat,unsigned int start){
@@ -424,12 +390,7 @@ void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t ms
         //compute_hamming();
         free(bufferinput);
         }
-
-int *SDHASH_EXT(BLOOMFILTER *bf,
- int doWhat,
- char *argv,
- unsigned int size,
- unsigned int start){
+int *SDHASH_EXT(BLOOMFILTER *bf, int doWhat, char *argv, unsigned int size, unsigned int start){
     // the list arg is used to decide whether we are going to use a list or a single file
     beg = start;
     struct stat file_stat;
