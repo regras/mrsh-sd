@@ -1,6 +1,5 @@
 #include "../header/hashing.h"
 #include "../header/config.h"
-#include "../header/fnv.h"
 #include "../header/main.h"
 #include "../header/sdhash.h"
 #include <stdio.h>
@@ -8,13 +7,13 @@
 
 //Depending on the third parameter it fills the Bloom filter (1) or it compares File against Bloom filter
 //doWhat: 1 = hashAndAdd  ; 2 = hashAndCompare ; 3 = remove
-int  *hashFileAndDo(BLOOMFILTER *bf, 
-	int doWhat, 
-	unsigned int start, 
+int  *hashFileAndDo(BLOOMFILTER *bf,
+	int doWhat,
+	unsigned int start,
 	unsigned int stop,
 	char *argv,
 	unsigned char* cbf) {
-	
+
 	// aqui entra o nosso sdhash!
 	return SDHASH_EXT(bf,doWhat,argv,stop,start,cbf);
 }
@@ -41,7 +40,7 @@ int createResultsSummary(BLOOMFILTER *bf, uint256 hash_val, int *results_summary
 		if (results_summary[3] > results_summary[2]) //check if there is a long run
 			results_summary[2] = results_summary[3];
 		return 1;
-	} 
+	}
 	else
 		results_summary[3] = 0;
 		results_summary[0]++;

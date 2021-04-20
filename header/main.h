@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   config.h
  * Author: Frank Breitinger
  *
@@ -13,7 +13,7 @@
 #include "../header/bloomfilter.h"
 #include "../header/helper.h"
 #include "../header/sdhash.h"
-#include "../boost/filesystem.hpp"
+#include "boost/filesystem.hpp"
 
 FILE    *getFileHandle(char *filename);
 void 		addPathToBloomfilter(BLOOMFILTER *bf, char *filename, unsigned char* cbf);
@@ -22,4 +22,3 @@ int	 		endsWithType(char *str);
 //extern *results_summary;
 
 #endif	/* MAIN_H */
-

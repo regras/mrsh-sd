@@ -11,7 +11,6 @@
 #include "../header/config.h"
 #include "../header/hashing.h"
 #include "../header/bloomfilter.h"
-#include "../header/fnv.h"
 #include <typeinfo>
 
 
@@ -38,31 +37,31 @@ BLOOMFILTER *init_empty_BF(){
 //Destroy a Bloom filter
 void destroy_bf(BLOOMFILTER *bf) {
    free(bf);
-   bf=NULL;  
+   bf=NULL;
 }
 /*
  * adds a hash value (eg. FNV) to the Bloom filter
  */
-void add_hash_to_bloomfilter(BLOOMFILTER *bf, 
-							uint256 hash_val, 
+void add_hash_to_bloomfilter(BLOOMFILTER *bf,
+							uint256 hash_val,
 							unsigned char *cbf){
 	uint64 masked_bits, byte_pos;
 	short bit_pos;
 	unsigned char *test = (unsigned char*)hash_val; // the variable test will contain the hash
-	
+
 	//for(int r = 0;r<8;r++) printf("Hash[%d] %X\n",r,hash_val[r]);
-	
+
 	uint64 *p = (uint64*)hash_val; // the pointer p will point to the hash
 	//as partes 5, 6 e 7 do hash são lixo
 
 //printf("\n");
 	// Concatena hash_val[r] e hash_val[r+1]
-	uint64 tmpHash = (((uint64)hash_val[1]<<32) ^ hash_val[0]); 
-	
+	uint64 tmpHash = (((uint64)hash_val[1]<<32) ^ hash_val[0]);
+
 	// the temporary hash is a power of 32 bit shift (to the left) to the first hash
 	for(int j = 0; j < SUBHASHES; j++) {
-		
-        //printf("TEMP HASH = %X\n",tmpHash); 
+
+        //printf("TEMP HASH = %X\n",tmpHash);
     	//printf("teste  = %s\n",test);
 
 		masked_bits = tmpHash & MASK;
@@ -70,14 +69,14 @@ void add_hash_to_bloomfilter(BLOOMFILTER *bf,
 
 		byte_pos = masked_bits >> 3; // right bit shift of teh masked bit obtained - big number
 
-		bit_pos = masked_bits & 0x7; // and of the masked bits and the number 7, that is, 
+		bit_pos = masked_bits & 0x7; // and of the masked bits and the number 7, that is,
 
 		bf -> array[byte_pos] |= (1<<(bit_pos));
 
       //  printf("POS = %d\n",SHIFTOPS*(j+1)/8);
 
         p = (uint64*)&test[SHIFTOPS*(j+1) / 8];
-	
+
 	//	printf("p = %llX\n",*p);
 	//	printf(" shift = %d\n",(SHIFTOPS*(j+1)) % 8 );
         tmpHash = *p >> ((SHIFTOPS*(j+1)) % 8);
@@ -86,7 +85,7 @@ void add_hash_to_bloomfilter(BLOOMFILTER *bf,
 	}
        // 		printf("######\n");
 
-	
+
 
 
 }
@@ -163,7 +162,7 @@ short is_in_bloom(BLOOMFILTER *bf, uint256 hash_val){
         p = (uint64*)&test[SHIFTOPS*(j+1) / 8];
         tmpHash = (*p) >> ((SHIFTOPS*(j+1))% 8);
 	}
-	
+
 	return 1;
 }
 
@@ -215,6 +214,3 @@ void readFileToBF(const char *filename, BLOOMFILTER *bf) {
         fclose(fp);
     }
 }
-
-
-

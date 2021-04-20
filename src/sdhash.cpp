@@ -1,4 +1,4 @@
-/* 	modified by João Pedro Bizzi Velho 
+/* 	modified by João Pedro Bizzi Velho
 	03 de novembro de 2019
 	Universidade Estadual de Campinas
     */
@@ -29,7 +29,6 @@
 #include "../header/sdhash.h"
 #include "../header/hashing.h"
 #include "../header/helper.h"
-#include "../header/fnv.h"
 
 #include <boost/multiprecision/cpp_int.hpp>
 
@@ -44,11 +43,11 @@
 #define ERROR_IGNORE 0
 #define ERROR_EXIT 1
 #define BINS 1000
-#define ENTR_POWER 10  
+#define ENTR_POWER 10
 #define ENTR_SCALE (BINS*(1 << ENTR_POWER))
 #define MIN_FILE_SIZE 512
 uint32_t  entr_win_size=64; //acho que é o W
-uint32_t  block_size = 4*KB; 
+uint32_t  block_size = 4*KB;
 uint64_t orig_file_size;
 uint32_t  max_elem;      // Max number of elements per filter (n)
 uint32_t pop_win_size=64;
@@ -119,14 +118,14 @@ int results_summary[4] = {0,0,0,0};
             954, 957, 960, 959, 967, 966, 969, 962, 968, 953, 972, 961, 982, 979, 978, 981, 980, 990, 987, 988,
             984, 983, 989, 985, 986, 977, 976, 975, 973, 974, 970, 971, 965, 964, 963, 956, 958, 524, 950, 948,
             949, 945, 946, 800, 801, 802, 791, 792, 501, 502, 503, 000, 000, 000, 000, 000, 000, 000, 000, 000,
-            000 
+            000
             };
          int64_t ENTROPY_64_INT[65];
         uint32_t BF_CLASS_MASKS[] = { 0x7FF, 0x7FFF, 0x7FFFF, 0x7FFFFF, 0x7FFFFFF, 0xFFFFFFFF};
         using namespace std;
 
-void *alloc_check(uint32_t alloc_type, uint64_t mem_bytes, /* o tamanho do bloco a ser alocado*/const char *fun_name,const char *var_name, uint32_t error_action) { 
-        void *mem_chunk = NULL; // inicializa o ponteiro para fazermos a alocação de memória! 
+void *alloc_check(uint32_t alloc_type, uint64_t mem_bytes, /* o tamanho do bloco a ser alocado*/const char *fun_name,const char *var_name, uint32_t error_action) {
+        void *mem_chunk = NULL; // inicializa o ponteiro para fazermos a alocação de memória!
             switch(alloc_type) {
             case ALLOC_ONLY:
                 mem_chunk = malloc(mem_bytes); //aloca o tamanho dado pelo parâmetro da função
@@ -148,13 +147,13 @@ void *alloc_check(uint32_t alloc_type, uint64_t mem_bytes, /* o tamanho do bloco
             }
         }
         return mem_chunk; // retorna o espaço em memória alocado.
-        
+
         }
 void *realloc_check( void *buffer, uint64_t new_size) {
         void *mem_chunk = realloc( buffer, new_size);
 
         return mem_chunk;
-     }  
+     }
 void sdbf_create(const char *name) {
     hashname = (char*)name;
     bf_size = bf_size;
@@ -198,15 +197,15 @@ uint64_t entr64_inc_int( uint64_t prev_entropy, const uint8_t *buffer, uint8_t *
   ascii[buffer[0]]--;
   ascii[buffer[64]]++;
   if( old_char_cnt == new_char_cnt+1) return prev_entropy;
-  
+
   int64_t old_diff = int64_t(ENTROPY_64_INT[old_char_cnt])   - int64_t(ENTROPY_64_INT[old_char_cnt-1]);
   int64_t new_diff = int64_t(ENTROPY_64_INT[new_char_cnt+1]) - int64_t(ENTROPY_64_INT[new_char_cnt]);
-  int64_t entropy =int64_t(prev_entropy) - old_diff + new_diff;      
+  int64_t entropy =int64_t(prev_entropy) - old_diff + new_diff;
   if(entropy < 0)
     entropy = 0;
   else if( entropy > ENTR_SCALE)
     entropy = ENTR_SCALE;
-    
+
       return (uint64_t)entropy;
         }
 void gen_chunk_ranks( uint8_t *file_buffer, const uint64_t chunk_size, uint16_t *chunk_ranks, uint16_t carryover) {
@@ -214,12 +213,12 @@ void gen_chunk_ranks( uint8_t *file_buffer, const uint64_t chunk_size, uint16_t 
         uint8_t *ascii = (uint8_t *)alloc_check( ALLOC_ZERO, 256, "gen_chunk_ranks", "ascii", ERROR_EXIT);;
         if( carryover > 0) {
             memcpy( chunk_ranks, chunk_ranks+chunk_size-carryover, carryover*sizeof(uint16_t));
-            /* 
+            /*
                 copia de chunk_ranks + chunk_size- carryover para chunk_ranks, um tamanho de carryover*16bytes
             */
         }
         memset( chunk_ranks+carryover,0, (chunk_size-carryover)*sizeof( uint16_t)); // seta em 0, partindo de chunk_ranks+carry_over, chunksize-carryover*16 bytes posições
-        for( offset=0; offset<chunk_size-entr_win_size; offset++) { 
+        for( offset=0; offset<chunk_size-entr_win_size; offset++) {
         int64_t limit = int64_t(chunk_size)-int64_t(entr_win_size);
         if(limit > 0) {
             for (offset=0; offset<limit; offset++) {
@@ -234,27 +233,27 @@ void gen_chunk_ranks( uint8_t *file_buffer, const uint64_t chunk_size, uint16_t 
                 chunk_ranks[offset] = ENTR64_RANKS[entropy >> ENTR_POWER];
             }
         }
-        
+
         free(ascii);
         }}
-void gen_chunk_scores( const uint16_t *chunk_ranks, const uint64_t chunk_size, uint16_t *chunk_scores, int32_t *score_histo) { 
+void gen_chunk_scores( const uint16_t *chunk_ranks, const uint64_t chunk_size, uint16_t *chunk_scores, int32_t *score_histo) {
         uint64_t i, j;
         uint32_t pop_win = pop_win_size;
         uint64_t min_pos = 0;
-        uint16_t min_rank = chunk_ranks[min_pos]; 
+        uint16_t min_rank = chunk_ranks[min_pos];
         memset( chunk_scores, 0, chunk_size*sizeof( uint16_t));
         if (chunk_size > pop_win) {
             for( i=0; i<chunk_size-pop_win; i++) {
-                // try sliding on the cheap  
+                // try sliding on the cheap
                 if(i>0 && min_rank>0) {
-  
+
                     while(chunk_ranks[i+pop_win] >= min_rank && i<min_pos && i<chunk_size-pop_win+1) {
                         if(chunk_ranks[i+pop_win] == min_rank)
                             min_pos = i+pop_win;
                             chunk_scores[min_pos]++;
                             i++;
                     }
-                } 
+                }
                 min_pos = i;
                 min_rank = chunk_ranks[min_pos];
                 for( j=i+1; j<i+pop_win; j++) {
@@ -267,7 +266,7 @@ void gen_chunk_scores( const uint16_t *chunk_ranks, const uint64_t chunk_size, u
                 }
                 if( chunk_ranks[min_pos] > 0) {
                     chunk_scores[min_pos]++;
-               
+
                 }
             }
             // Generate score histogram (for b-sdbf signatures)
@@ -276,14 +275,14 @@ void gen_chunk_scores( const uint16_t *chunk_ranks, const uint64_t chunk_size, u
                     score_histo[chunk_scores[i]]++;
             }
             }
-        }   
+        }
 void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint16_t *chunk_scores, const uint64_t chunk_size,BLOOMFILTER *bf, int doWhat,unsigned char *cbf) {
     uint64_t i;
-    unsigned int sha1_hash[5];  
+    unsigned int sha1_hash[5];
     results_summary[0] = 0,results_summary[1]=0,results_summary[2] = 0, results_summary[3] = 0;
-    int az = 0; 
+    int az = 0;
     if (chunk_size > pop_win_size) {
-        for( i=0; i<chunk_size-pop_win_size; i++) { 
+        for( i=0; i<chunk_size-pop_win_size; i++) {
             if( chunk_scores[i] > threshold) {
                     char buf[15]; //storing the cutting hash (55 bits) temporarily
                     int size = 0; //controling the position of each part of the hash
@@ -291,16 +290,16 @@ void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint1
 
                     // sintaxe sha1: sha1(input,tamanho,saida);
                     //fixed hash size input of 64 bits
-                    
+
 
                     SHA1(file_buffer + chunk_pos + i, pop_win_size, (uint8_t *)sha1_hash);
-                   
+
                    /* for (int i = 0; i < 5; ++i)
                        printf("%X",sha1_hash[i]);
                     printf("\n");*/
 
                     switch(doWhat){
-                        case 1: 
+                        case 1:
                             add_hash_to_bloomfilter(bf, sha1_hash, cbf);
                         case 2:
                             createResultsSummary(bf,sha1_hash,results_summary);
@@ -317,11 +316,11 @@ void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint1
                     else{
                         remove_hash_from_filter(bf, (unsigned int*)sha1_hash, cbf); // used in case of feature removal
                     }*/
-                    
+
 
                     }
             //last_block_index = i + 1;
-            }                 
+            }
         }
        // printf("%d %d %d %d \n",results_summary[0],results_summary[1],results_summary[2],results_summary[3]);
     }
@@ -340,10 +339,10 @@ void gen_block_sdbf_mt( uint8_t *file_buffer, uint64_t file_size, uint64_t block
 void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_size,BLOOMFILTER *bf, int doWhat,unsigned char *cbf){
         //assert( chunk_size > pop_win_size); // aborta caso ocorra oque está descrito entre parenteses
         uint32_t i, k, sum; // declara as variaveis
-        int32_t score_histo[66];  // Score histogram 
+        int32_t score_histo[66];  // Score histogram
         uint64_t buff_size = ((file_size >> 11) + 1) << 8; // Estimate sdbf size (reallocate later)
         buff_size = (buff_size < 256) ? 256 : buff_size;  // caso a primeira comparação for verdadeira, 256 será utilizada, caso seja falsa, o buff_size será utilizado
- 
+
         buffer = (uint8_t *)alloc_check( ALLOC_ZERO, buff_size, "gen_chunk_sdbf", "sdbf_buffer", ERROR_EXIT); // aloca um espaço de memória do tamanho de buff_size
 
         // Chunk-based computation
@@ -365,13 +364,13 @@ void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_si
                 sum += score_histo[k];
             }
             //allowed = max_elem-sum;
-       
+
             gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, chunk_size,bf,doWhat,cbf);
-    
-        } 
-     
+
+        }
+
         if( rem > 0) {
-           
+
             gen_chunk_ranks( file_buffer+qt*chunk_size, rem, chunk_ranks, 0);
             gen_chunk_scores( chunk_ranks, rem, chunk_scores, 0);
             gen_chunk_hash( file_buffer, chunk_pos, chunk_scores, rem, bf,doWhat,cbf);
@@ -381,45 +380,45 @@ void gen_chunk_sdbf( uint8_t *file_buffer, uint64_t file_size, uint64_t chunk_si
         free( chunk_scores);
 
         }
-void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t msize,BLOOMFILTER *bf, int doWhat,unsigned int start,unsigned char *cbf){ 
+void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t msize,BLOOMFILTER *bf, int doWhat,unsigned int start,unsigned char *cbf){
     entr64_table_init_int();
        uint64_t chunk_size; // unsigned int de 64 bits
         uint8_t *bufferinput; // unsigned int de 8 bufferinputits, ponteiro no caso
        // dd_bloc_size = 0;
 
-        bufferinput = (uint8_t*)alloc_check(ALLOC_ZERO,sizeof(uint8_t)*msize,"sdbf_hash_stream","buffer input", ERROR_EXIT); // coloca na variável buffer input o vetor  
+        bufferinput = (uint8_t*)alloc_check(ALLOC_ZERO,sizeof(uint8_t)*msize,"sdbf_hash_stream","buffer input", ERROR_EXIT); // coloca na variável buffer input o vetor
         ifs->read((char*)bufferinput,msize); // le o bloco colocado em buffer input, que tem tamanho msize
-    
+
         chunk_size = ifs->gcount(); // retorna a qtdade de caracteres extraidos do ultimo objeto lido, no caso buffer input
         if (chunk_size < MIN_FILE_SIZE){ // se for menor que o tamanho de MIN_FILE_SIZE
 
             free(bufferinput); // libera o espaço alocado por buffer input
             throw -3; // too small, diminui throw
         }
-        sdbf_create(name); 
+        sdbf_create(name);
         orig_file_size = chunk_size; // orig_file_size recebe o tamanho do ultimo objeto lido, em chars
 
             if (!dd_block_size) {  // dd_block_size for zero
-            gen_chunk_sdbf(bufferinput,msize, 32*MB,bf,doWhat,cbf); 
-        } 
+            gen_chunk_sdbf(bufferinput,msize, 32*MB,bf,doWhat,cbf);
+        }
         else { // block mode
 
             max_elem = max_elem_dd; // igual max_elem da classe atual com o elemento max_elem_dd da classe sdbf_config
             uint64_t dd_block_cnt =  msize/dd_block_size;// declara uma var com o valor msize dividido por dd_block_size, que é o tamanho total do arquivo pelo tamanho do bloco padrão, resultado no número total de blocos
-        
+
             if( msize % dd_block_size >= MIN_FILE_SIZE) // se o resto de divisao do tamanho atual do arquivo pelo tamanho do bloco for maior do que o MIN_FILE_SIZE, o contador de blocos incrementa
                 dd_block_cnt++;
-        
+
             bf_count = dd_block_cnt; // a contagem de de filtros de bloom é igual ao tamanho de blocos??
             dd_block_size = dd_block_size; // ??
             buffer = (uint8_t *)alloc_check(  ALLOC_ZERO,
-                                                    dd_block_cnt*bf_size, // aqui inserimos o valor de blocos x 
-                                                    "sdbf_hash_dd", 
-                                                    "buffer", 
+                                                    dd_block_cnt*bf_size, // aqui inserimos o valor de blocos x
+                                                    "sdbf_hash_dd",
+                                                    "buffer",
                                                     ERROR_EXIT);
             elem_counts = (uint16_t *)alloc_check( ALLOC_ZERO, sizeof( uint16_t)*dd_block_cnt, "sdbf_hash_dd", "elem_counts", ERROR_EXIT);
             gen_block_sdbf_mt(bufferinput, msize, dd_block_size);
-       
+
         }
 
         //compute_hamming();
@@ -444,7 +443,7 @@ int *SDHASH_EXT(BLOOMFILTER *bf,
     catch (int e) {
         if (e==-2)
         exit(-2);}
-    
+
     is->close();
     delete is;
 
