@@ -30,7 +30,6 @@ short 			is_in_bloom(BLOOMFILTER *bf, uint256 hash_val);
 
 void 			add_hash_to_bloomfilter(BLOOMFILTER *bf, uint256 hash_val);
 void            convert_hex_binary(const unsigned char *hex_string, BLOOMFILTER *bf);
-
 void 			print_bf(BLOOMFILTER *bf);
 void 			readFileToBF(const char *filename, BLOOMFILTER *bf);
 

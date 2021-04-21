@@ -123,18 +123,24 @@ int main(int argc, char **argv) {
 
 
 
-/*read db from file and compare stuff against it (not a list)*/
-if(mode->compare){
+	/*read db from file and compare stuff against it (not a list)*/
+	if(mode->compare){
+
 	// Reads the BF to the memory
 	readFileToBF(listName, bf);
 	int size;
+
 	for (int j = optind; j < argc; j++) {
 		if(endsWithType(argv[j])){
 			continue;
 		}
+
 		FILE *file = getFileHandle(argv[j]);
 		size = find_file_size(file);
+
+
 		evaluation(bf,size,argv[j]);
+
 		fclose(file);
 
 	}
@@ -142,7 +148,8 @@ if(mode->compare){
 
 	exit(1);
 }
-// read db from file and compare stuff against it (w. a list)
+
+	// read db from file and compare stuff against it (w. a list)
 	if (mode->readDB) {
 
 		// Reads the BF to the memory
@@ -162,11 +169,11 @@ if(mode->compare){
 			fgets (LINE, 500 ,list);
 			char *filename;
 			filename = strtok(LINE,"\n");
-			//printf("%s\n",filename);
 			if (endsWithType(filename)) continue;
 
 			FILE *file = getFileHandle(filename);
 			size = find_file_size(file);
+		//	printf("filename #%i = %s\n",j,filename);
 			evaluation(bf,size,filename);
 
 
@@ -193,6 +200,7 @@ if(mode->compare){
 				continue;
 			}
 
+			//printf("filename # %i = %s\n",j-optind + 1,argv[j]);
 			FILE *file = getFileHandle(argv[j]);
 			size = find_file_size(file);
 			hashFileAndDo(bf, 1, 0, size,argv[j]);
@@ -238,7 +246,11 @@ if(mode->compare){
 			if (endsWithType(filename))continue;
 			FILE *file = getFileHandle(filename);
 			size = find_file_size(file);
+
+			//printf("filename # %i = %s\n",j,LINE);
+
 			hashFileAndDo(bf, 1, 0, size,LINE);
+
 			fclose(file);
 		}
 
@@ -248,7 +260,6 @@ if(mode->compare){
 		exit(1);
 
 	}
-
 
 	//read all arguments, create the bloomfilter, and print it to stdout
 	if (mode->all_a_all) {
@@ -286,7 +297,6 @@ if(mode->compare){
 		exit(1);
 }
 
-
 }
 
 char* FindFileName(char *digest){
@@ -306,11 +316,10 @@ void evaluation(BLOOMFILTER *bf,int size,char *filename) {
 	found = *(results+1);
 	total = *(results)+ found;
 	longest_run = *(results+2);
-	//char* name;
-	//name = FindFileName(filename);
 
 	if (longest_run >= MIN_RUN){
-		printf("%s:%d of %d(Longest run %d)\n", filename, found, total,longest_run);
+		printf("%s:%d of %d(Longest run %d) ===== %d\n", filename, found, total,longest_run,total - found);
+
 	}
 	else{
 		printf("%s not found, min long run not long enough \n",filename);

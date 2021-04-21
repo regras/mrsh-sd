@@ -44,6 +44,11 @@ void destroy_bf(BLOOMFILTER *bf) {
  */
 void add_hash_to_bloomfilter(BLOOMFILTER *bf,
 							uint256 hash_val){
+	#ifdef PRINT_HASHES
+	// for(int h = 0; h < 5; h++)printf("%X",hash_val[h]);
+	// printf("\n");
+	#endif
+
 	uint64 masked_bits, byte_pos;
 	short bit_pos;
 	unsigned char *test = (unsigned char*)hash_val; // the variable test will contain the hash
@@ -98,6 +103,11 @@ short is_in_bloom(BLOOMFILTER *bf, uint256 hash_val){
 	unsigned int masked_bits, byte_pos;
 	short bit_pos;
 	unsigned char *test = (unsigned char*)hash_val;
+	#ifdef PRINT_HASHES
+	// for(int h = 0; h < 5; h++)printf("%X",hash_val[h]);
+	// printf("\n");
+	#endif
+
 
 	uint64 *p = (uint64*)hash_val;
 	uint64 tmpHash = (((uint64)hash_val[1]<<32) ^ hash_val[0]);

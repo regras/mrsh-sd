@@ -284,10 +284,13 @@ void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint1
         for( i=0; i<chunk_size-pop_win_size; i++) {
             if( chunk_scores[i] > threshold) {
 
-                    SHA1(file_buffer + chunk_pos + i, pop_win_size, (uint8_t *)sha1_hash);
-
-                    if(doWhat == 1) add_hash_to_bloomfilter(bf, sha1_hash);
-                    else createResultsSummary(bf,sha1_hash,results_summary);
+              SHA1(file_buffer + chunk_pos + i, pop_win_size, (uint8_t *)sha1_hash);
+              #ifdef PRINT_HASHES
+              for(int h = 0; h < 5; h++)printf("%X",sha1_hash[h]);
+              printf("\n");
+              #endif
+              if(doWhat == 1) add_hash_to_bloomfilter(bf, sha1_hash);
+              else createResultsSummary(bf,sha1_hash,results_summary);
             }
         }
     }
@@ -392,6 +395,10 @@ void sdbf( const char *name,std::istream *ifs,uint32_t dd_block_size,uint64_t ms
         }
 int *SDHASH_EXT(BLOOMFILTER *bf, int doWhat, char *argv, unsigned int size, unsigned int start){
     // the list arg is used to decide whether we are going to use a list or a single file
+    #ifdef PRINT_HASHES
+    printf("\n===========HASHING: %s==========\n",argv);
+    #endif
+
     beg = start;
     struct stat file_stat;
     ifstream *is = new ifstream();
@@ -406,6 +413,8 @@ int *SDHASH_EXT(BLOOMFILTER *bf, int doWhat, char *argv, unsigned int size, unsi
 
     is->close();
     delete is;
-
+    #ifdef PRINT_HASHES
+    printf("\n=========================\n");
+    #endif
     return results_summary;
     }
