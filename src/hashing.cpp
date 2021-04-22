@@ -8,9 +8,7 @@
 //Depending on the third parameter it fills the Bloom filter (1) or it compares File against Bloom filter
 //doWhat: 1 = hashAndAdd  ; 2 = hashAndCompare ; 3 = remove
 int  *hashFileAndDo(BLOOMFILTER *bf,	int doWhat,	unsigned int start,	unsigned int stop,char *argv) {
-
-	// aqui entra o nosso sdhash!
-	return SDHASH_EXT(bf,doWhat,argv,stop,start);
+		return SDHASH_EXT(bf,doWhat,argv,stop,start);
 }
 
 int createResultsSummary(BLOOMFILTER *bf, uint256 hash_val, int *results_summary) {
@@ -23,7 +21,10 @@ int createResultsSummary(BLOOMFILTER *bf, uint256 hash_val, int *results_summary
 	}
 	else
 		results_summary[3] = 0;
+		// counter for not found chunks
 		results_summary[0]++;
+		// o total de pedaços do arquivo será results_summary[0] + results_summary[1] - total de encontrados  + total de não encontrados
+		// o longest run será o results_summary[2]
 	return 0;
 }
 

@@ -8,7 +8,7 @@
 #ifndef CONFIG_H
 #define	CONFIG_H
 
-//#define PRINT_HASHES
+// #define PRINT_HASHES
 
 #define BF_SIZE_IN_BYTES 		33554432
 #define SUBHASHES           5
@@ -30,7 +30,6 @@ typedef struct{
     bool readDB;
     bool helpmessage;
 		bool compare;
-    bool all_a_all;
     bool list;
 } MODES;
 
