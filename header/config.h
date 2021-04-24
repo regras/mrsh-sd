@@ -9,6 +9,7 @@
 #define	CONFIG_H
 
 // #define PRINT_HASHES
+#define NCF
 
 #define BF_SIZE_IN_BYTES 		33554432
 #define SUBHASHES           5

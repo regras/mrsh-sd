@@ -23,4 +23,4 @@ set_source_files_properties(${CPP_FILES} PROPERTIES LANGUAGE CXX)
 
 add_executable(mrsh_sd  ${CPP_FILES})
 
-target_link_libraries(mrsh_sd -lm -lssl -lcrypto Boost::filesystem)
+target_link_libraries(mrsh_sd -lm -lssl -lcrypto -lsqlite3 Boost::filesystem)

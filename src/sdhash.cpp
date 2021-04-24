@@ -18,7 +18,7 @@
 #include <sys/stat.h>
 #include <openssl/sha.h>
 #include <sys/socket.h>
-
+#include <sqlite3.h>
 //#include <sys/types.h>
 
 #include <arpa/inet.h>
@@ -31,6 +31,18 @@
 #include "../header/helper.h"
 
 #include <boost/multiprecision/cpp_int.hpp>
+
+/* Database path */
+const char* DATA_BASE = "../../../database_common_features/database_common_features.db";
+
+#define MAXIMUM_NUM_COMMON_FEAT 3 // only features with 1 or 2 occurencies are accepted
+//#define MAXIMUM_NUM_COMMON_FEAT 5
+//#define MAXIMUM_NUM_COMMON_FEAT 10
+//#define MAXIMUM_NUM_COMMON_FEAT 20
+//#define MAXIMUM_NUM_COMMON_FEAT 50
+//#define MAXIMUM_NUM_COMMON_FEAT 100
+
+
 
 #define ALLOC_ONLY 1
 #define ALLOC_ZERO 2
@@ -124,6 +136,171 @@ uint32_t /*sdbf_conf::*/ENTR64_RANKS[] = {
 int64_t ENTROPY_64_INT[65];
 uint32_t BF_CLASS_MASKS[] = { 0x7FF, 0x7FFF, 0x7FFFF, 0x7FFFFF, 0x7FFFFFF, 0xFFFFFFFF};
 using namespace std;
+
+
+/* STARTING DB FUNCTIONS */
+
+sqlite3* open_connection(const char *db_name){
+    sqlite3 *db;
+
+    int rc = sqlite3_open(db_name, &db);
+
+    if(rc)
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+
+    return db;
+}
+
+void close_connection(sqlite3 *db){
+
+    int rc = sqlite3_close(db);
+    char *zErrMsg = 0;
+
+    if( rc != SQLITE_OK ) {
+        fprintf(stderr, "SQL error (close connection): %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    }
+    return;
+}
+
+int checking_for_feature_on_db(char* hash_feature, sqlite3 *db, sqlite3_stmt *stmt) {
+
+    //Binding parameters...
+
+    if (sqlite3_bind_text(stmt, 1, hash_feature, strlen(hash_feature), SQLITE_TRANSIENT) != SQLITE_OK) {
+        printf("\nCould not bind text.\n");
+        return 0;
+    }
+
+    //Executing sql statement...
+    int count=0;
+	
+    if ( sqlite3_step(stmt) == SQLITE_ROW ){
+        do
+        {
+            for(int i=0; i < sqlite3_column_count(stmt); i++)
+                count  = sqlite3_column_int(stmt, i);
+        }while(sqlite3_step(stmt) == SQLITE_ROW);
+    }
+
+    //Cleaning parameters values...
+    sqlite3_reset(stmt);
+
+    return count;
+}
+
+sqlite3_stmt* prepare_select_counter_common_features_stmt(sqlite3 *db){
+
+    char sql[200];
+    sql[0]='\0';
+
+    sqlite3_stmt *stmt;	
+    strcpy(sql, "SELECT CONT_DIFF FROM common_features_sdhash where HASH=?");
+	
+    if ( sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        printf("\nCould not prepare statement.");
+    	return NULL;
+    }
+
+    return stmt;
+}
+
+void finalize_prepared_stmt(sqlite3_stmt *stmt){
+	sqlite3_finalize(stmt);
+}
+
+
+/* ENDING DB FUNCTIONS */
+
+
+
+/* STARTING FNV HASH FUNCTION */
+
+/// hash FNV a block of memory
+ void fnv1a(const void* data, size_t numBytes, uint32_t *fnv_hash) {
+
+    uint64_t extract0;
+    uint64_t extract1;
+    uint64_t extract2;
+    uint64_t extract3;
+    uint64_t extract4;
+
+    uint64_t mask0 = 0xFFF0000000000000;	//Take 12 bits of 64 hash
+    uint64_t mask1 = 0x000FFF0000000000;
+    uint64_t mask2 = 0x000000FFF0000000;
+    uint64_t mask3 = 0x000000000FFF0000;
+    //uint64_t mask4 = 0x000000000000FFF0;
+    uint64_t mask4 = 0x000000000000FFFF;
+
+    fnv_hash[0] = 0x00000000;
+    fnv_hash[1] = 0x00000000;
+    fnv_hash[2] = 0x00000000;
+    fnv_hash[3] = 0x00000000;
+    fnv_hash[4] = 0x00000000;
+
+
+    const uint64_t Prime = 1099511628211; //   16777619
+    const uint64_t Seed  = 0x811C9DC5A9B3C6D8;
+
+    uint64_t hash = Seed;
+
+    assert(data);
+    const unsigned char* ptr = (const unsigned char*)data;
+    while (numBytes--)
+        hash = (*ptr++ ^ hash) * Prime;
+  	
+    //printf("HASH DE 64: 0x%" PRIx64 "\n", hash);
+
+    extract0 = (mask0 & hash) ;
+    extract1 = (mask1 & hash) ;
+    extract2 = (mask2 & hash) ;
+    extract3 = (mask3 & hash) ;
+    extract4 = (mask4 & hash) ;
+
+    extract0 = extract0 >>= 8;
+    extract0 = extract0 >>= 8;
+    extract0 = extract0 >>= 8;
+    extract0 = extract0 >>= 8;
+    extract0 = extract0 >>= 8;
+    extract0 = extract0 >>= 8;
+    extract0 = extract0 >>= 4;
+
+    extract1 = extract1 >>= 8;
+    extract1 = extract1 >>= 8;
+    extract1 = extract1 >>= 8;
+    extract1 = extract1 >>= 8;
+    extract1 = extract1 >>= 8;
+
+    extract2 = extract2 >>= 8;
+    extract2 = extract2 >>= 8;
+    extract2 = extract2 >>= 8;
+    extract2 = extract2 >>= 4;
+
+    extract3 = extract3 >>= 8;
+    extract3 = extract3 >>= 8;
+
+    //extract4 = extract4 >>= 4;
+    extract4 = extract4;
+
+    fnv_hash[0] = fnv_hash[0]|extract0;
+    fnv_hash[1] = fnv_hash[1]|extract1;
+    fnv_hash[2] = fnv_hash[2]|extract2;
+    fnv_hash[3] = fnv_hash[3]|extract3;
+    fnv_hash[4] = fnv_hash[4]|extract4;
+
+    /*
+    printf("FNV_HASH 0: 0x%" PRIx32 "\n", fnv_hash[0]);
+    printf("FNV_HASH 1: 0x%" PRIx32 "\n", fnv_hash[1]);
+    printf("FNV_HASH 2: 0x%" PRIx32 "\n", fnv_hash[2]);
+    printf("FNV_HASH 3: 0x%" PRIx32 "\n", fnv_hash[3]);
+    printf("FNV_HASH 4: 0x%" PRIx32 "\n\n", fnv_hash[4]);
+    
+    printf("HASH: %X", fnv_hash[4]);
+    */
+}
+
+/* ENDING FNV HASH FUNCTION */
+
 
 void *alloc_check(uint32_t alloc_type, uint64_t mem_bytes, /* o tamanho do bloco a ser alocado*/ const char *fun_name,const char *var_name, uint32_t error_action) {
         void *mem_chunk = NULL; // inicializa o ponteiro para fazermos a alocação de memória!
@@ -280,21 +457,76 @@ void gen_chunk_scores( const uint16_t *chunk_ranks, const uint64_t chunk_size, u
 void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint16_t *chunk_scores, const uint64_t chunk_size,BLOOMFILTER *bf, int doWhat) {
     uint64_t i;
     unsigned int sha1_hash[5];
+    #ifdef NCF
+    unsigned int fnv_hash[5];
+    sqlite3 *db;
+
+    /* Open database */
+    db = open_connection(DATA_BASE);
+    sqlite3_stmt* stmt = prepare_select_counter_common_features_stmt(db);
+    #endif
+
+
     if (chunk_size > pop_win_size) {
         for( i=0; i<chunk_size-pop_win_size; i++) {
             if( chunk_scores[i] > threshold) {
+            #ifdef NCF
+                fnv1a( file_buffer+chunk_pos+i, pop_win_size, (uint32_t *)fnv_hash);
+
+                char buf[16];
+                int size=0;
+                //num_features++;
+
+                //Preparing hash for query db
+                for(int n=0; n < 5; n++){
+                            if(n == 0){
+                        if(sha1_hash[n] == 0)
+                            sprintf(buf + size, "   ");
+                    else
+                        sprintf(buf + size, "%3x", sha1_hash[n]);
+                    //printf("%04x---", sha1_hash[n]);
+                    size=size+strlen(buf);
+                    }
+                    else if(n == 4){
+                        sprintf(buf + size, "%04x", sha1_hash[n]);
+                    //printf("%04x", sha1_hash[n]);
+                    }
+                    else{
+                        sprintf(buf + size, "%03x", sha1_hash[n]);
+                    //printf("%03x", sha1_hash[n]);
+                    size=size+3;
+                    }
+                }
+
+            #endif
+
 
               SHA1(file_buffer + chunk_pos + i, pop_win_size, (uint8_t *)sha1_hash);
               #ifdef PRINT_HASHES
                 for(int h = 0; h < 5; h++)printf("%X",sha1_hash[h]);
                 printf("\n");
               #endif
-              if(doWhat == 1) add_hash_to_bloomfilter(bf, sha1_hash);
-              else createResultsSummary(bf,sha1_hash,results_summary);
+              #ifdef NCF
+              		int common=0;
+		            common = checking_for_feature_on_db(buf, db, stmt);
 
+		            if(common < MAXIMUM_NUM_COMMON_FEAT){
+                #endif
+                        if(doWhat == 1) add_hash_to_bloomfilter(bf, sha1_hash);
+                        else createResultsSummary(bf,sha1_hash,results_summary);
+
+                #ifdef NCF
+                    }
+                #endif
             }
         }
     }
+    #ifdef NCF
+        finalize_prepared_stmt(stmt);
+
+       /* Close database */
+        close_connection(db);
+    #endif
   //  if (results_summary[2] >= MIN_RUN)	printf("%d of %d(Longest run %d)\n",results_summary[1], results_summary[0] + results_summary[1],results_summary[2]);
   // else printf("not found, min long run not long enough%d %d %d %d  \n", results_summary[0], results_summary[1], results_summary[2], results_summary[3]);
 }
