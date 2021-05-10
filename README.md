@@ -37,3 +37,33 @@ File ./header/config.h
 #define BF_SIZE_IN_BYTES <number>
 ```
 Obs.: The size must be power of two and expressed in bytes.
+
+### Options 
+There are two main options:
+-Create BF 
+-Search the given bf for files
+
+And there are two ways of making such operations:
+-With a list 
+-With a dir/file name
+
+To create a bf with a dir/filename:
+```
+./mrsh_sd -g DIR/FILE > filter.sdbf
+```
+
+To create a bf with a list:
+```
+./mrsh_sd -d LIST.TXT > filter.sdbf
+```
+
+To search a file/dir into a given bf digest:
+```
+./mrsh_sd -c filter.sdbf DIR/FILE > resultados.txt
+```
+To search a list of files into a given bf digest:
+```
+./mrsh_sd -i filter.sdbf list.txt > resultados.txt
+```
+
+Obs.: I have not tested using a dir inside the given dir, so if you are going to use it please check for possible erros.
