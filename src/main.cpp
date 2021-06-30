@@ -242,6 +242,6 @@ void evaluation(BLOOMFILTER *bf,int size,char *filename) {
 	total = *(results)+ found;
 	longest_run = *(results+2);
 
-	if (longest_run >= MIN_RUN)	printf("%s:%d of %d(Longest run %d) ===== %d\n", filename, found, total,longest_run,total - found);
-	else printf("%s not found, min long run not long enough \n",filename);
+	if (longest_run >= MIN_RUN)	printf("%s|%d|%d|%d\n", filename, found, total,longest_run);
+	else printf("%s|NF\n",filename);
 }

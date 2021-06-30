@@ -33,12 +33,12 @@
 #include <boost/multiprecision/cpp_int.hpp>
 
 /* Database path */
-const char* DATA_BASE = "../../database_common_features/database_common_features.db";
+const char* DATA_BASE = "/home/bizzi/IC/Databases/database_common_features_sha1_known_set_1_MB.db";
 
-#define MAXIMUM_NUM_COMMON_FEAT 3 // only features with 1 or 2 occurencies are accepted
+// #define MAXIMUM_NUM_COMMON_FEAT 3 // only features with 1 or 2 occurencies are accepted
 //#define MAXIMUM_NUM_COMMON_FEAT 5
 //#define MAXIMUM_NUM_COMMON_FEAT 10
-//#define MAXIMUM_NUM_COMMON_FEAT 20
+#define MAXIMUM_NUM_COMMON_FEAT 20
 //#define MAXIMUM_NUM_COMMON_FEAT 50
 //#define MAXIMUM_NUM_COMMON_FEAT 100
 
@@ -456,10 +456,9 @@ void gen_chunk_scores( const uint16_t *chunk_ranks, const uint64_t chunk_size, u
         }
 void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint16_t *chunk_scores, const uint64_t chunk_size,BLOOMFILTER *bf, int doWhat) {
     uint64_t i;
-    unsigned int sha1_hash[5];
+    uint8_t sha1_hash[20];
     
     #ifdef NCF
-    unsigned int fnv_hash[5];
     sqlite3 *db;
 
     /* Open database */
@@ -471,49 +470,34 @@ void gen_chunk_hash( uint8_t *file_buffer, const uint64_t chunk_pos, const uint1
     if (chunk_size > pop_win_size) {
         for( i=0; i<chunk_size-pop_win_size; i++) {
             if( chunk_scores[i] > threshold) {
-            #ifdef NCF
-                fnv1a( file_buffer+chunk_pos+i, pop_win_size, (uint32_t *)fnv_hash);
 
-                char buf[16];
-                int size=0;
+              SHA1(file_buffer + chunk_pos + i, pop_win_size, sha1_hash);
+
+            #ifdef NCF
+                char buf[41];
+                int size = 0;
+                int n = 0;
                 //num_features++;
 
                 //Preparing hash for query db
-                for(int n=0; n < 5; n++){
-                    if(n == 0){
-                        if(fnv_hash[n] == 0)
-                            sprintf(buf + size, "   ");
-                    else
-                        sprintf(buf + size, "%3x", fnv_hash[n]);
-                    //printf("%04x---", sha1_hash[n]);
-                    size=size+strlen(buf);
-                    }
-                    else if(n == 4){
-                        sprintf(buf + size, "%04x", fnv_hash[n]);
-                    //printf("%04x", sha1_hash[n]);
-                    }
-                    else{
-                        sprintf(buf + size, "%03x", fnv_hash[n]);
-                    //printf("%03x", sha1_hash[n]);
-                    size=size+3;
-                    }
+                for( n=0; n < 20; n++){
+                    sprintf((char*)&buf[n*2], "%02X", sha1_hash[n]);
                 }
 
-                //printf("%s\n",buf);
+
+                buf[2*n] = '\0';
                 int common=0;
                 common = checking_for_feature_on_db(buf, db, stmt);
-                printf("common = %d\n",common);
                 if(common < MAXIMUM_NUM_COMMON_FEAT){
             #endif
-
-              SHA1(file_buffer + chunk_pos + i, pop_win_size, (uint8_t *)sha1_hash);
+              
               #ifdef PRINT_HASHES
-                for(int h = 0; h < 5; h++)printf("%X",sha1_hash[h]);
+                for(int h = 0; h < 20; h++)printf("%02X",sha1_hash[h]);
                 printf("\n");
               #endif
   
-                        if(doWhat == 1) add_hash_to_bloomfilter(bf, sha1_hash);
-                        else createResultsSummary(bf,sha1_hash,results_summary);
+                        if(doWhat == 1) add_hash_to_bloomfilter(bf, (uint32_t*) sha1_hash);
+                        else createResultsSummary(bf,(uint32_t*)sha1_hash,results_summary);
 
                 #ifdef NCF
                     }
