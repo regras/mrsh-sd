@@ -1,3 +1,5 @@
+This repository was maintained due to historical reasons. To use the latest version of this tool, please access https://github.com/regras/net-sd. 
+
 # mrsh-sd
 A similarity search strategy based on mrsh-net and modified to take advantage of sdhash characteristics.
 
